@@ -9,6 +9,7 @@ sh_test(
     name = "simple_as_binary",
     srcs = ["run_simple.sh"],
     data = [":simple"],
+    size = "small",
 )
 
 genrule(

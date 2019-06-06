@@ -8,4 +8,5 @@ d_test(
         "//tests/simple_c_library:simple_c_library_wrapper",
     ],
     imports = [".."],
+    size = "small",
 )

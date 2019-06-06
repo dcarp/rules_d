@@ -11,6 +11,7 @@ d_test(
     name = "greeter_test",
     srcs = ["greeter_test.d"],
     deps = [":greeter"],
+    size = "small",
 )
 
 cc_library(

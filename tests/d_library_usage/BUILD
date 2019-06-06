@@ -5,4 +5,5 @@ d_test(
     srcs = ["d_library_usage.d"],
     deps = ["//tests/simple_d_library"],
     imports = ["../simple_d_library"],
+    size = "small",
 )

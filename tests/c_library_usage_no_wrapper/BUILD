@@ -4,6 +4,7 @@ d_test(
     name = "c_library_usage_no_wrapper",
     srcs = ["c_library_usage_no_wrapper.d"],
     deps = [":c_plus_one_lib"],
+    size = "small",
 )
 
 cc_library(
