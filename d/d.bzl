@@ -334,6 +334,7 @@ def _d_test_impl(ctx):
 def _get_libs_for_static_executable(dep):
     """
     Finds the libraries used for linking an executable statically.
+
     This replaces the old API dep.cc.libs
     Args:
       dep: Target
