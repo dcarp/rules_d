@@ -1,0 +1,22 @@
+"""rules_d"""
+
+module(
+    name = "rules_d",
+    version = "0.1.0",
+)
+
+bazel_dep(name = "platforms", version = "0.0.10")
+
+d = use_extension("//d:extensions.bzl", "d")
+d.toolchain(
+    compiler = "dmd",
+    version = "2.101.2",
+)
+
+# d.toolchain(
+#     compiler = "dmd",
+#     version = "2.109.1",
+# )
+use_repo(d, "d_toolchains")
+
+register_toolchains("@d_toolchains//:all")

@@ -1,0 +1,9 @@
+common --enable_platform_specific_config
+common --incompatible_disallow_empty_glob
+common --lockfile_mode=off
+
+build --incompatible_strict_action_env
+build --nolegacy_external_runfiles
+build --reuse_sandbox_directories
+
+test --test_output=errors
