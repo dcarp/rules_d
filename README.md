@@ -30,13 +30,13 @@ external repositories for the D toolchain:
 ```python
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 http_archive(
-    name = "io_bazel_rules_d",
+    name = "rules_d",
     urls = ["https://github.com/bazelbuild/rules_d/archive/bcf137e3c9381545ce54715632bc1d31c51ee4da.tar.gz"],
     sha256 = "a32847bf2ae634563dece49c4dc8353956b64ba5c2d01ce811ea243e1a21b5b7",
     strip_prefix = "rules_d-bcf137e3c9381545ce54715632bc1d31c51ee4da",
 )
 
-load("@io_bazel_rules_d//d:d.bzl", "d_repositories")
+load("@rules_d//d:d.bzl", "d_repositories")
 d_repositories()
 ```
 
@@ -152,7 +152,7 @@ The library `foo` is built using a `d_library` target:
 `foo/BUILD`:
 
 ```python
-load("@io_bazel_rules_d//d:d.bzl", "d_library")
+load("@rules_d//d:d.bzl", "d_library")
 
 d_library(
     name = "foo",
@@ -279,7 +279,7 @@ Build the C library using the `cc_library` rule and then use the
 `greeter/BUILD`:
 
 ```python
-load("@io_bazel_rules_d//d:d.bzl", "d_source_library")
+load("@rules_d//d:d.bzl", "d_source_library")
 
 cc_library(
     name = "native_greeter_lib",
@@ -300,7 +300,7 @@ the C library:
 `hello_world/BUILD`:
 
 ```python
-load("@io_bazel_rules_d//d:d.bzl", "d_source_library")
+load("@rules_d//d:d.bzl", "d_source_library")
 
 d_binary(
     name = "hello_world",
@@ -417,7 +417,7 @@ The `hello_lib` library is built using a `d_library` target:
 `hello_lib/BUILD`:
 
 ```python
-load("@io_bazel_rules_d//d:d.bzl", "d_library")
+load("@rules_d//d:d.bzl", "d_library")
 
 d_library(
     name = "hello_lib",
@@ -441,7 +441,7 @@ The `hello_world` binary is built using a `d_binary` target:
 `hello_world/BUILD`:
 
 ```python
-load("@io_bazel_rules_d//d:d.bzl", "d_library")
+load("@rules_d//d:d.bzl", "d_library")
 
 d_binary(
     name = "hello_world",
@@ -590,7 +590,7 @@ To build the library and unit test:
 `hello_lib/BUILD`:
 
 ```python
-load("@io_bazel_rules_d//d:d.bzl", "d_library", "d_test")
+load("@rules_d//d:d.bzl", "d_library", "d_test")
 
 d_library(
     name = "greeter",
@@ -671,7 +671,7 @@ that takes the `d_library` `foo` as its dependency:
 `foo/BUILD`:
 
 ```python
-load("@io_bazel_rules_d//d:d.bzl", "d_library", "d_docs")
+load("@rules_d//d:d.bzl", "d_library", "d_docs")
 
 d_library(
     name = "foo",

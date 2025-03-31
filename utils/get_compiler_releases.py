@@ -1,71 +1,106 @@
 import argparse
-from datetime import datetime, timedelta, UTC
+from collections import namedtuple
+from datetime import datetime, UTC
 from hashlib import sha256
+from itertools import groupby
 from pathlib import Path
 import re
+from typing import Optional
+from urllib.parse import urlsplit, urljoin
 
-from github import Auth, Github
+from github import Auth, Github, GitReleaseAsset
 import requests
 
 GITHUB_LDC_REPO = "ldc-developers/ldc"
-ARCHIVE_FILES = [".tar.xz"]
-DMD_REPO_URL = "https://downloads.dlang.org/releases/2.x/"
+ARCHIVE_TYPES = [".tar.xz", ".zip"]  # in order of the preference
+OSES = ["linux", "osx", "windows"]
+ARCHS = ["aarch64", "amd64", "arm64", "x86_64"]
+DMD_REPO_URL = "https://downloads.dlang.org/releases/"
+LOOKBACK_YEARS = 5
 
-cutoff_date = datetime.now(UTC).replace(
-    hour=0, minute=0, second=0, microsecond=0
-) - timedelta(days=5 * 365)
+
+CompilerReleaseInfo = namedtuple(
+    "CompilerRelease",
+    ["compiler", "version", "os", "arch", "archive", "url", "file_name", "sha256"],
+)
 
 
-def consider_asset(asset_name: str, ignore_arch=False) -> bool:
-    return (
-        any(asset_name.endswith(ext) for ext in ARCHIVE_FILES)
-        and any(os in asset_name for os in ["linux", "osx"])
-        and (
-            ignore_arch
-            or any(
-                arch in asset_name for arch in ["aarch64", "arm64", "amd64", "x86_64"]
-            )
+def canonical_arch(arch: str) -> str:
+    if arch == "amd64":
+        return "x86_64"
+    elif arch == "arm64":
+        return "aarch64"
+    else:
+        return arch
+
+
+def remove_duplicates(releases: list[CompilerReleaseInfo]) -> list[CompilerReleaseInfo]:
+    # remove release duplicates that differ on archive type only
+    return list(
+        next(v)
+        for _, v in groupby(
+            sorted(
+                releases,
+                key=lambda k: [
+                    k.compiler,
+                    k.version,
+                    k.os,
+                    k.arch,
+                    ARCHIVE_TYPES.index(
+                        k.archive
+                    ),  # consider order in ARCHIVE_TYPES list
+                ],
+            ),
+            key=lambda k: [k.compiler, k.version, k.os, k.arch],
         )
     )
 
 
-def get_dmd_releases():
+# match strings like dmd.2.095.1.linux.tar.xz
+dmd_release_re = re.compile(
+    f"dmd[.](.*)[.]({'|'.join(OSES)})({'|'.join(re.escape(at) for at in ARCHIVE_TYPES)})"
+)
+
+
+def get_dmd_compiler_release_info(url: str) -> Optional[CompilerReleaseInfo]:
+    u = urlsplit(url)
+    file_name = Path(u.path).name
+    match = dmd_release_re.fullmatch(file_name)
+    if not match:
+        return None
+    return CompilerReleaseInfo(
+        compiler="dmd",
+        version=match.group(1),
+        os=match.group(2),
+        arch=canonical_arch("x86_64"),
+        archive=match.group(3),
+        url=urljoin(DMD_REPO_URL, url),
+        file_name=file_name,
+        sha256=None,
+    )
+
+
+def get_dmd_releases() -> list[CompilerReleaseInfo]:
+    print("Getting DMD compiler releases...")
     response = requests.get(DMD_REPO_URL)
     response.raise_for_status()
-    return [
+    current_year = datetime.now().year
+    years = [
         r
-        for r in re.findall(r"<li><a href=\".*\">(.*)</a></li>", response.text)
-        if r >= "2.084.0"
+        for r in re.findall(r"<li><a href=\".*\">(\d*)</a></li>", response.text)
+        if current_year - LOOKBACK_YEARS <= int(r) <= current_year
     ]
-
-
-def download_dmd_release_assets(release, cache_dir: Path):
-    response = requests.get(f"{DMD_REPO_URL}{release}/")
-    response.raise_for_status()
-    for asset in re.findall(r"<li><a href=\".*\">(.*)</a></li>", response.text):
-        if not consider_asset(asset, ignore_arch=True):
-            continue
-        asset_file = cache_dir / asset
-        if asset_file.exists():
-            print(f"{asset} is already downloaded.")
-            continue
-        print(f"Downloading {asset}...")
-        response = requests.get(
-            f"{DMD_REPO_URL}{release}/{asset}",
-            stream=True,
-        )
+    compiler_releases = []
+    for year in years:
+        response = requests.get(DMD_REPO_URL + year)
         response.raise_for_status()
-
-        with open(asset_file, "wb") as f:
-            for chunk in response.iter_content(chunk_size=1024 * 1024):
-                f.write(chunk)
-
-        print(f"Downloaded {asset} to {asset_file}.")
-
-
-def download_dmd_releases(cache_dir: Path):
-    for release in get_dmd_releases():
-        download_dmd_release_assets(release, cache_dir)
+        urls = re.findall(r"<li><a href=\"(.*)\">.*</a></li>", response.text)
+        compiler_releases.extend(
+            info
+            for info in (get_dmd_compiler_release_info(url) for url in urls)
+            if info
+        )
+    return remove_duplicates(compiler_releases)
 
 
 def get_ldc_repo(github_token: str):
@@ -74,49 +109,99 @@ def get_ldc_repo(github_token: str):
     return github.get_repo(GITHUB_LDC_REPO)
 
 
-def get_ldc_releases(github_token: str):
+# match strings like ldc2-1.24.0-linux-aarch64.tar.xz
+ldc_release_re = re.compile(
+    f"ldc2-(.*)-({'|'.join(OSES)})-({'|'.join(ARCHS)})({'|'.join(re.escape(at) for at in ARCHIVE_TYPES)})"
+)
+
+
+def get_ldc_compiler_release_info(
+    asset: GitReleaseAsset,
+) -> Optional[CompilerReleaseInfo]:
+    match = ldc_release_re.fullmatch(asset.name)
+    if not match:
+        return None
+    return CompilerReleaseInfo(
+        compiler="ldc",
+        version=match.group(1),
+        os=match.group(2),
+        arch=canonical_arch(match.group(3)),
+        archive=match.group(4),
+        url=asset.browser_download_url,
+        file_name=asset.name,
+        sha256=None,
+    )
+
+
+def get_ldc_releases(github_token: str) -> list[CompilerReleaseInfo]:
+    print("Getting LDC compiler releases...")
+    cutoff_date = datetime(datetime.now().year - LOOKBACK_YEARS, 1, 1, tzinfo=UTC)
+    compiler_releases = []
+    for release in get_ldc_repo(github_token).get_releases():
+        if release.prerelease or release.published_at < cutoff_date:
+            continue
+        compiler_releases.extend(
+            info
+            for info in (get_ldc_compiler_release_info(a) for a in release.get_assets())
+            if info
+        )
+    return remove_duplicates(compiler_releases)
+
+
+def download_release(
+    release: CompilerReleaseInfo, cache_dir: Path, auth_token: str = ""
+):
+    asset_file = cache_dir / release.file_name
+    if asset_file.exists():
+        print(f"{release.file_name} is already downloaded.")
+        return
+    print(f"Downloading from {release.url}...")
+
+    response = requests.get(
+        release.url,
+        headers={"Authorization": f"token {auth_token}"} if auth_token else None,
+        stream=True,
+    )
+    response.raise_for_status()
+
+    with open(asset_file, "wb") as f:
+        for chunk in response.iter_content(chunk_size=1024 * 1024):
+            f.write(chunk)
+
+    print(f"Downloaded {release.file_name} to {asset_file}.")
+
+
+def compute_sha256_digests(
+    releases: list[CompilerReleaseInfo], cache_dir: Path
+) -> list[CompilerReleaseInfo]:
+    print("Computing checksums")
     return [
-        r
-        for r in get_ldc_repo(github_token).get_releases()
-        if not r.prerelease and r.published_at >= cutoff_date
+        r._replace(sha256=sha256((cache_dir / r.file_name).read_bytes()).hexdigest())
+        for r in releases
     ]
 
 
-def download_ldc_release_assets(release, cache_dir: Path, github_token: str):
-    for asset in release.get_assets():
-        if not consider_asset(asset.name):
-            continue
-        asset_file = cache_dir / asset.name
-        if asset_file.exists() and asset_file.stat().st_size == asset.size:
-            print(f"{asset.name} is already downloaded.")
-            continue
-        print(f"Downloading {asset.name}...")
-        response = requests.get(
-            asset.browser_download_url,
-            headers={"Authorization": f"token {github_token}"},
-            stream=True,
-        )
-        response.raise_for_status()
+def generate_releases_bzl(releases: list[CompilerReleaseInfo], releases_bzl_file: Path):
+    template = '''"""Known compiler list.
 
-        with open(asset_file, "wb") as f:
-            for chunk in response.iter_content(chunk_size=1024 * 1024):
-                f.write(chunk)
+This file is generated with:
+python3 utils/get_compiler_releases.py -c utils/cache --github-token <GITHUB_TOKEN> -o d/private/known_compiler_releases.bzl
+"""
 
-        print(f"Downloaded {asset.name} to {asset_file}.")
+load(":common.bzl", "CompilerReleaseInfo")
 
-
-def download_ldc_releases(cache_dir: Path, github_token: str):
-    assert github_token, "Empty GitHub token"
-    for release in get_ldc_releases(github_token):
-        download_ldc_release_assets(release, cache_dir, github_token)
-
-
-def calculate_checksums(cache_dir: Path):
-    for f in cache_dir.iterdir():
-        if not any(f.name.endswith(ext) for ext in ARCHIVE_FILES):
-            continue
-        hash = sha256(f.read_bytes())
-        print(f"{f.name} sha256 {hash.hexdigest()}")
+known_compiler_releases = [
+<PLACEHOLDER>
+]
+'''
+    output = template.replace(
+        "<PLACEHOLDER>",
+        "\n".join(
+            f'    CompilerReleaseInfo("{r.compiler}", "{r.version}", "{r.os}", "{r.arch}", "{r.url}", "{r.sha256}"),'
+            for r in releases
+        ),
+    )
+    releases_bzl_file.write_text(output)
 
 
 def main():
@@ -135,6 +220,12 @@ def main():
         help="Don't check upstream. Use local cache-only",
     )
     arg_parser.add_argument("--github-token", type=str, help="GitHub token")
+    arg_parser.add_argument(
+        "-b",
+        "--compiler_releases_bzl_file",
+        type=Path,
+        help="Known compiler releases .bzl file",
+    )
     args = arg_parser.parse_args()
     cache_dir = args.cache
     if not cache_dir.exists() or not cache_dir.is_dir():
@@ -142,12 +233,22 @@ def main():
     if not args.skip_ldc and not args.github_token:
         arg_parser.error("No GitHub token specified")
 
-    if not args.no_refresh:
-        if not args.skip_dmd:
-            download_dmd_releases(cache_dir)
-        if not args.skip_ldc:
-            download_ldc_releases(cache_dir, args.github_token)
-    calculate_checksums(cache_dir)
+    compiler_releases = []
+
+    if not args.skip_dmd:
+        compiler_releases.extend(get_dmd_releases())
+    if not args.skip_ldc:
+        compiler_releases.extend(get_ldc_releases(args.github_token))
+
+    for release in compiler_releases:
+        auth_token = args.github_token if release.compiler == "ldc" else None
+        assert auth_token or release.compiler != "ldc", "Empty GitHub token"
+        download_release(release, cache_dir, auth_token)
+
+    compiler_releases = compute_sha256_digests(compiler_releases, cache_dir)
+
+    if args.compiler_releases_bzl_file:
+        generate_releases_bzl(compiler_releases, args.compiler_releases_bzl_file)
 
 
 if __name__ == "__main__":

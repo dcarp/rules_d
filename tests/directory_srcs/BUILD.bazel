@@ -1,5 +1,5 @@
-load("@io_bazel_rules_d//d:d.bzl", "d_test")
-load("@io_bazel_rules_d//tests/directory_srcs:directory_generator.bzl", "directory_generator")
+load("@rules_d//d:d.bzl", "d_test")
+load("@rules_d//tests/directory_srcs:directory_generator.bzl", "directory_generator")
 
 # Provides a single declared directory File as its output in Default Info,
 # containing a copy of all srcs. This is similar to capturing the output of the

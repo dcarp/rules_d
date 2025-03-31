@@ -1,19 +1,7 @@
 """Implementation for D rules extensions."""
 
-load("//d/private:repositories.bzl", "d_register_toolchain")
-
-_D_COMPILERS = ["dmd", "gdc", "ldc"]
-
-_D_TOOLCHAIN_TAG = tag_class(
-    attrs = dict(
-        compiler = attr.string(
-            default = _D_COMPILERS[0],
-            doc = "Compiler type. One of: dmd, gdc, ldc",
-            values = _D_COMPILERS,
-        ),
-        version = attr.string(doc = "Compiler version."),
-    ),
-)
+load(":common.bzl", "d_toolchain_attrs", "default_compiler", "default_versions")
+load(":repositories.bzl", "d_toolchains_repo")
 
 def _find_modules(module_ctx):
     root = None
@@ -34,13 +22,33 @@ def _d_impl(module_ctx):
     root, rules_d = _find_modules(module_ctx)
 
     toolchains = root.tags.toolchain or rules_d.tags.toolchain
+    if len(toolchains) > 1:
+        fail("Multiple toolchains not supported yet")
+
+    # register default toolchain if nothing specified
+    if not toolchains:
+        d_toolchains_repo(
+            name = "d_toolchains",
+            compiler = default_compiler,
+            version = default_versions[default_compiler],
+        )
 
     for toolchain in toolchains:
-        d_register_toolchain(toolchain.compiler, toolchain.version)
+        if toolchain.compiler == "gdc":
+            fail("gdc compiler not supported yet")
+        if not toolchain.compiler:
+            toolchain.compiler = default_compiler
+        if not toolchain.version:
+            toolchain.version = default_versions[toolchain.compiler]
+        d_toolchains_repo(
+            name = "d_toolchains",
+            compiler = toolchain.compiler,
+            version = toolchain.version,
+        )
 
 d = module_extension(
     implementation = _d_impl,
     tag_classes = {
-        "toolchain": _D_TOOLCHAIN_TAG,
+        "toolchain": tag_class(attrs = d_toolchain_attrs),
     },
 )
