@@ -6,17 +6,18 @@ module(
 )
 
 bazel_dep(name = "platforms", version = "0.0.10")
+bazel_dep(name = "rules_shell", version = "0.3.0")
 
 d = use_extension("//d:extensions.bzl", "d")
+# d.toolchain(
+#     compiler = "ldc",
+#     version = "1.35.0",
+# )
+
 d.toolchain(
     compiler = "dmd",
-    version = "2.101.2",
+    version = "2.109.1",
 )
-
-# d.toolchain(
-#     compiler = "dmd",
-#     version = "2.109.1",
-# )
 use_repo(d, "d_toolchains")
 
 register_toolchains("@d_toolchains//:all")

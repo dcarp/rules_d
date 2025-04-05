@@ -18,7 +18,6 @@ this repository and becoming a maintainer.
     <li><a href="#d_source_library">d_source_library</a></li>
     <li><a href="#d_binary">d_binary</a></li>
     <li><a href="#d_test">d_test</a></li>
-    <li><a href="#d_docs">d_docs</a></li>
   </ul>
 </div>
 
@@ -36,14 +35,12 @@ http_archive(
     strip_prefix = "rules_d-bcf137e3c9381545ce54715632bc1d31c51ee4da",
 )
 
-load("@rules_d//d:d.bzl", "d_repositories")
+load("@rules_d//d:defs.bzl", "d_repositories")
 d_repositories()
 ```
 
 ## Roadmap
 
-* Generate documentation using [`ddox`](https://github.com/rejectedsoftware/ddox)
-  for `d_docs` rule.
 * Support for other options as defined in the [Dub package
   format](http://code.dlang.org/package-format?lang=json)
 * Support for specifying different configurations of a library, closer to
@@ -152,7 +149,7 @@ The library `foo` is built using a `d_library` target:
 `foo/BUILD`:
 
 ```python
-load("@rules_d//d:d.bzl", "d_library")
+load("@rules_d//d:defs.bzl", "d_library")
 
 d_library(
     name = "foo",
@@ -279,7 +276,7 @@ Build the C library using the `cc_library` rule and then use the
 `greeter/BUILD`:
 
 ```python
-load("@rules_d//d:d.bzl", "d_source_library")
+load("@rules_d//d:defs.bzl", "d_source_library")
 
 cc_library(
     name = "native_greeter_lib",
@@ -300,7 +297,7 @@ the C library:
 `hello_world/BUILD`:
 
 ```python
-load("@rules_d//d:d.bzl", "d_source_library")
+load("@rules_d//d:defs.bzl", "d_source_library")
 
 d_binary(
     name = "hello_world",
@@ -417,7 +414,7 @@ The `hello_lib` library is built using a `d_library` target:
 `hello_lib/BUILD`:
 
 ```python
-load("@rules_d//d:d.bzl", "d_library")
+load("@rules_d//d:defs.bzl", "d_library")
 
 d_library(
     name = "hello_lib",
@@ -441,7 +438,7 @@ The `hello_world` binary is built using a `d_binary` target:
 `hello_world/BUILD`:
 
 ```python
-load("@rules_d//d:d.bzl", "d_library")
+load("@rules_d//d:defs.bzl", "d_library")
 
 d_binary(
     name = "hello_world",
@@ -590,7 +587,7 @@ To build the library and unit test:
 `hello_lib/BUILD`:
 
 ```python
-load("@rules_d//d:d.bzl", "d_library", "d_test")
+load("@rules_d//d:defs.bzl", "d_library", "d_test")
 
 d_library(
     name = "greeter",
@@ -609,86 +606,3 @@ The unit test can then be run using:
 ```sh
 bazel test //hello_lib:greeter_test
 ```
-
-<a name="d_docs"></a>
-## d_docs
-
-```python
-d_docs(name, dep)
-```
-
-<table class="table table-condensed table-bordered table-params">
-  <colgroup>
-    <col class="col-param" />
-    <col class="param-description" />
-  </colgroup>
-  <thead>
-    <tr>
-      <th colspan="2">Attributes</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>name</code></td>
-      <td>
-        <code>Name, required</code>
-        <p>A unique name for this rule.</p>
-      </td>
-    </tr>
-    <tr>
-      <td><code>dep</code></td>
-      <td>
-        <code>Label, required</code>
-        <p>The label of the target to generate code documentation for.</p>
-        <p>
-          <code>d_docs</code> can generate HTML code documentation for the
-          source files of <code>d_library</code>, <code>d_source_library</code>,
-          <code>d_binary</code>, or <code>d_test</code> targets.
-        </p>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-### Example
-
-Suppose you have the following directory structure for a D project:
-
-```
-[workspace]/
-    WORKSPACE
-    foo/
-        BUILD
-        foo.d
-        bar.d
-        baz.d
-```
-
-The `foo/` directory contains the sources for the `d_library` `foo`. To
-generate HTML documentation for the `foo` library, define a `d_docs` target
-that takes the `d_library` `foo` as its dependency:
-
-`foo/BUILD`:
-
-```python
-load("@rules_d//d:d.bzl", "d_library", "d_docs")
-
-d_library(
-    name = "foo",
-    srcs = [
-        "foo.d",
-        "bar.d",
-        "baz.d",
-    ],
-)
-
-d_docs(
-    name = "foo_docs",
-    dep = ":foo",
-)
-```
-
-Running `bazel build //foo:foo_docs` will generate a zip file containing the
-HTML documentation generated from the source files. See the official D language
-documentation on the [Documentation Generator](http://dlang.org/ddoc.html) for
-more information on the conventions for source documentation.

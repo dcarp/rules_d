@@ -1,0 +1,245 @@
+load("@rules_d//d/private:common.bzl", "D_TOOLCHAIN")
+load("@rules_d//d/private:d_toolchain.bzl", "d_toolchain")
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+
+filegroup(
+    name = "all_files",
+    srcs = [
+        ":compiler_files",
+        ":dmd",
+        ":dub",
+        ":rdmd",
+    ],
+)
+
+filegroup(
+    name = "compiler_files",
+    srcs = [
+        ":druntime_files",
+        ":phobos_files",
+    ],
+)
+
+filegroup(
+    name = "druntime_files",
+    srcs = glob(["src/druntime/import/**"]),
+)
+
+filegroup(
+    name = "phobos_files",
+    srcs = glob(["src/phobos/**"]),
+)
+
+sh_binary(
+    name = "dmd_linux",
+    srcs = ["linux/bin64/dmd"],
+    data = [":compiler_files"],
+)
+
+sh_binary(
+    name = "dmd_macos",
+    srcs = ["osx/bin64/dmd"],
+    data = [":compiler_files"],
+)
+
+sh_binary(
+    name = "dmd_windows",
+    srcs = ["windows/bin64/dmd.exe"],
+    data = [":compiler_files"],
+)
+
+filegroup(
+    name = "dynamic_phobos_linux",
+    srcs = ["linux/lib64/libphobos2.so"],
+)
+
+filegroup(
+    name = "dynamic_phobos_macos",
+    srcs = ["osx/lib64/libphobos2.dylib"],
+)
+
+filegroup(
+    name = "dynamic_phobos_windows",
+    srcs = ["windows/lib64/phobos2.dll"],
+)
+
+alias(
+    name = "dynamic_phobos",
+    actual = select({
+        "@platforms//os:linux": ":dynamic_phobos_linux",
+        "@platforms//os:macos": ":dynamic_phobos_macos",
+        "@platforms//os:windows": ":dynamic_phobos_windows",
+    }),
+)
+
+filegroup(
+    name = "static_phobos_linux",
+    srcs = ["linux/lib64/libphobos2.a"],
+)
+
+filegroup(
+    name = "static_phobos_macos",
+    srcs = ["osx/lib64/libphobos2.a"],
+)
+
+filegroup(
+    name = "static_phobos_windows",
+    srcs = ["windows/lib64/phobos2.lib"],
+)
+
+alias(
+    name = "static_phobos",
+    actual = select({
+        "@platforms//os:linux": ":static_phobos_linux",
+        "@platforms//os:macos": ":static_phobos_macos",
+        "@platforms//os:windows": ":static_phobos_windows",
+    }),
+)
+
+alias(
+    name = "dmd",
+    actual = select({
+        "@platforms//os:linux": ":dmd_linux",
+        "@platforms//os:macos": ":dmd_macos",
+        "@platforms//os:windows": ":dmd_windows",
+    }),
+    visibility = ["@rules_d//d:__subpackages__"],
+)
+
+d_toolchain(
+    name = "dmd_linux_toolchain",
+    all_files = ":all_files",
+    compiler = ":dmd_linux",
+    cpu = "x86_64",
+    druntime_import_path = "src/druntime/import",
+    dub = ":dub_linux",
+    dynamic_stdlib = ":dynamic_phobos_linux",
+    os = "linux",
+    static_stdlib = ":static_phobos_linux",
+    stdlib_import_path = "src/phobos",
+)
+
+d_toolchain(
+    name = "dmd_macos_toolchain",
+    all_files = ":all_files",
+    compiler = ":dmd_macos",
+    cpu = "x86_64",
+    druntime_import_path = "src/druntime/import",
+    dub = ":dub_macos",
+    dynamic_stdlib = ":dynamic_phobos_macos",
+    os = "macos",
+    static_stdlib = ":static_phobos_macos",
+    stdlib_import_path = "src/phobos",
+)
+
+d_toolchain(
+    name = "dmd_windows_toolchain",
+    all_files = ":all_files",
+    compiler = ":dmd_windows",
+    cpu = "x86_64",
+    druntime_import_path = "src/druntime/import",
+    dub = ":dub_windows",
+    dynamic_stdlib = ":dynamic_phobos_windows",
+    os = "windows",
+    static_stdlib = ":static_phobos_windows",
+    stdlib_import_path = "src/phobos",
+)
+
+toolchain(
+    name = "dmd_linux_d_toolchain",
+    exec_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    tags = ["manual"],
+    target_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    toolchain = ":dmd_linux_toolchain",
+    toolchain_type = D_TOOLCHAIN,
+    visibility = ["//visibility:public"],
+)
+
+toolchain(
+    name = "dmd_macos_d_toolchain",
+    exec_compatible_with = [
+        "@platforms//os:macos",
+        "@platforms//cpu:x86_64",
+    ],
+    tags = ["manual"],
+    target_compatible_with = [
+        "@platforms//os:macos",
+        "@platforms//cpu:x86_64",
+    ],
+    toolchain = ":dmd_macos_toolchain",
+    toolchain_type = D_TOOLCHAIN,
+)
+
+toolchain(
+    name = "dmd_windows_d_toolchain",
+    exec_compatible_with = [
+        "@platforms//os:windows",
+        "@platforms//cpu:x86_64",
+    ],
+    tags = ["manual"],
+    target_compatible_with = [
+        "@platforms//os:windows",
+        "@platforms//cpu:x86_64",
+    ],
+    toolchain = ":dmd_windows_toolchain",
+    toolchain_type = D_TOOLCHAIN,
+)
+
+sh_binary(
+    name = "dub_linux",
+    srcs = ["linux/bin64/dub"],
+)
+
+sh_binary(
+    name = "dub_macos",
+    srcs = ["osx/bin64/dub"],
+)
+
+sh_binary(
+    name = "dub_windows",
+    srcs = ["windows/bin64/dub.exe"],
+)
+
+alias(
+    name = "dub",
+    actual = select({
+        "@platforms//os:linux": ":dub_linux",
+        "@platforms//os:macos": ":dub_macos",
+        "@platforms//os:windows": ":dub_windows",
+    }),
+    visibility = ["@rules_d//d:__subpackages__"],
+)
+
+sh_binary(
+    name = "rdmd_linux",
+    srcs = ["linux/bin64/rdmd"],
+    data = [":compiler_files"],
+)
+
+sh_binary(
+    name = "rdmd_macos",
+    srcs = ["osx/bin64/rdmd"],
+    data = [":compiler_files"],
+)
+
+sh_binary(
+    name = "rdmd_windows",
+    srcs = ["windows/bin64/rdmd.exe"],
+    data = [":compiler_files"],
+)
+
+alias(
+    name = "rdmd",
+    actual = select({
+        "@platforms//os:linux": ":rdmd_linux",
+        "@platforms//os:macos": ":rdmd_macos",
+        "@platforms//os:windows": ":rdmd_windows",
+    }),
+    visibility = ["@rules_d//d:__subpackages__"],
+)

@@ -3,24 +3,42 @@
 load(":common.bzl", "d_toolchain_attrs")
 load(":known_compiler_releases.bzl", "known_compiler_releases")
 
-def _canonical_arch(arch):
-    if arch == "amd64":
+def _canonical_cpu(cpu):
+    if cpu == "amd64":
         return "x86_64"
-    elif arch == "arm64":
+    elif cpu == "arm64":
         return "aarch64"
     else:
-        return arch
+        return cpu
+
+def _canonical_os(os):
+    if os == "mac os x":
+        return "macos"
+    else:
+        return os
+
+def _archive_prefix(url):
+    filename = url.rsplit("/", 1)[-1]
+    if filename.startswith("dmd"):
+        return "dmd2"
+    elif filename.startswith("ldc"):
+        for ext in [".tar.xz", ".zip"]:
+            if filename.endswith(ext):
+                return filename[:-len(ext)]
+        return filename
+    else:
+        fail("Unknown compiler archive {}".format(filename))
 
 def _d_toolchains_repo_impl(repository_ctx):
-    os = repository_ctx.os.name
-    arch = _canonical_arch(repository_ctx.os.arch)
+    os = _canonical_os(repository_ctx.os.name)
+    cpu = _canonical_cpu(repository_ctx.os.arch)
     compilers = [
         cr
         for cr in known_compiler_releases
         if cr.compiler == repository_ctx.attr.compiler and
            cr.version == repository_ctx.attr.version and
            cr.os == os and
-           cr.arch == arch
+           cr.cpu == cpu
     ]
     if not compilers:
         fail(
@@ -28,16 +46,30 @@ def _d_toolchains_repo_impl(repository_ctx):
                 repository_ctx.attr.compiler,
                 repository_ctx.attr.version,
                 os,
-                arch,
+                cpu,
             ),
         )
     if len(compilers) > 1:
         fail("More than one compiler found")
 
     compiler = compilers[0]
-    print(compiler)
-    res = repository_ctx.download_and_extract(url = compiler.url, sha256 = compiler.sha256)
-    print(res)
+    repository_ctx.download_and_extract(
+        url = compiler.url,
+        sha256 = compiler.sha256,
+        strip_prefix = _archive_prefix(compiler.url),
+    )
+    if repository_ctx.attr._toolchain_build_file:
+        toolchain_build_file = repository_ctx.attr._toolchain_build_file
+    else:
+        toolchain_build_file = Label(
+            ":BUILD.{}_toolchain.bazel".format(repository_ctx.attr.compiler),
+        )
+
+    repository_ctx.file(
+        "BUILD.bazel",
+        repository_ctx.read(repository_ctx.path(toolchain_build_file)),
+        executable = False,
+    )
 
 d_toolchains_repo = repository_rule(
     implementation = _d_toolchains_repo_impl,

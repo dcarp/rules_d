@@ -1,4 +1,5 @@
-load("@rules_d//d:d.bzl", "d_binary")
+load("@rules_d//d:defs.bzl", "d_binary")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
 
 d_binary(
     name = "simple",

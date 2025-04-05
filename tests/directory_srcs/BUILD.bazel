@@ -1,4 +1,4 @@
-load("@rules_d//d:d.bzl", "d_test")
+load("@rules_d//d:defs.bzl", "d_test")
 load("@rules_d//tests/directory_srcs:directory_generator.bzl", "directory_generator")
 
 # Provides a single declared directory File as its output in Default Info,

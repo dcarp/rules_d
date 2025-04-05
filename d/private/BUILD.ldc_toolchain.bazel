@@ -1,0 +1,3 @@
+load("@rules_d//d/private/d_toolchain.bzl", "d_toolchain")
+
+print("!!!!!!!!!!!!!!!!!!!!!!!!1 Hello for ldc")

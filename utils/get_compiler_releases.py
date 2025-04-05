@@ -14,24 +14,30 @@ import requests
 GITHUB_LDC_REPO = "ldc-developers/ldc"
 ARCHIVE_TYPES = [".tar.xz", ".zip"]  # in order of the preference
 OSES = ["linux", "osx", "windows"]
-ARCHS = ["aarch64", "amd64", "arm64", "x86_64"]
+CPUS = ["aarch64", "amd64", "arm64", "x86_64"]
 DMD_REPO_URL = "https://downloads.dlang.org/releases/"
 LOOKBACK_YEARS = 5
 
 
 CompilerReleaseInfo = namedtuple(
     "CompilerRelease",
-    ["compiler", "version", "os", "arch", "archive", "url", "file_name", "sha256"],
+    ["compiler", "version", "os", "cpu", "archive", "url", "file_name", "sha256"],
 )
 
 
-def canonical_arch(arch: str) -> str:
-    if arch == "amd64":
+def canonical_cpu(cpu: str) -> str:
+    if cpu == "amd64":
         return "x86_64"
-    elif arch == "arm64":
+    elif cpu == "arm64":
         return "aarch64"
     else:
-        return arch
+        return cpu
+
+def canonical_os(os: str) -> str:
+    if os == "osx":
+        return "macos"
+    else:
+        return os
 
 
 def remove_duplicates(releases: list[CompilerReleaseInfo]) -> list[CompilerReleaseInfo]:
@@ -45,13 +51,13 @@ def remove_duplicates(releases: list[CompilerReleaseInfo]) -> list[CompilerRelea
                     k.compiler,
                     k.version,
                     k.os,
-                    k.arch,
+                    k.cpu,
                     ARCHIVE_TYPES.index(
                         k.archive
                     ),  # consider order in ARCHIVE_TYPES list
                 ],
             ),
-            key=lambda k: [k.compiler, k.version, k.os, k.arch],
+            key=lambda k: [k.compiler, k.version, k.os, k.cpu],
         )
     )
 
@@ -71,8 +77,8 @@ def get_dmd_compiler_release_info(url: str) -> Optional[CompilerReleaseInfo]:
     return CompilerReleaseInfo(
         compiler="dmd",
         version=match.group(1),
-        os=match.group(2),
-        arch=canonical_arch("x86_64"),
+        os=canonical_os(match.group(2)),
+        cpu=canonical_cpu("x86_64"),
         archive=match.group(3),
         url=urljoin(DMD_REPO_URL, url),
         file_name=file_name,
@@ -111,7 +117,7 @@ def get_ldc_repo(github_token: str):
 
 # match strings like ldc2-1.24.0-linux-aarch64.tar.xz
 ldc_release_re = re.compile(
-    f"ldc2-(.*)-({'|'.join(OSES)})-({'|'.join(ARCHS)})({'|'.join(re.escape(at) for at in ARCHIVE_TYPES)})"
+    f"ldc2-(.*)-({'|'.join(OSES)})-({'|'.join(CPUS)})({'|'.join(re.escape(at) for at in ARCHIVE_TYPES)})"
 )
 
 
@@ -124,8 +130,8 @@ def get_ldc_compiler_release_info(
     return CompilerReleaseInfo(
         compiler="ldc",
         version=match.group(1),
-        os=match.group(2),
-        arch=canonical_arch(match.group(3)),
+        os=canonical_os(match.group(2)),
+        cpu=canonical_cpu(match.group(3)),
         archive=match.group(4),
         url=asset.browser_download_url,
         file_name=asset.name,
@@ -197,7 +203,7 @@ known_compiler_releases = [
     output = template.replace(
         "<PLACEHOLDER>",
         "\n".join(
-            f'    CompilerReleaseInfo("{r.compiler}", "{r.version}", "{r.os}", "{r.arch}", "{r.url}", "{r.sha256}"),'
+            f'    CompilerReleaseInfo("{r.compiler}", "{r.version}", "{r.os}", "{r.cpu}", "{r.url}", "{r.sha256}"),'
             for r in releases
         ),
     )

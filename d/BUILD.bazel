@@ -2,3 +2,18 @@ toolchain_type(
     name = "toolchain_type",
     visibility = ["//visibility:public"],
 )
+
+alias(
+    name = "dmd",
+    actual = "@d_toolchains//:dmd",
+)
+
+alias(
+    name = "dub",
+    actual = "@d_toolchains//:dub",
+)
+
+alias(
+    name = "rdmd",
+    actual = "@d_toolchains//:rdmd",
+)

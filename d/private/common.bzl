@@ -1,11 +1,13 @@
 """Shared attributes"""
 
-def CompilerReleaseInfo(compiler, version, os, arch, url, sha256):
+D_TOOLCHAIN = "@rules_d//d:toolchain_type"
+
+def CompilerReleaseInfo(compiler, version, os, cpu, url, sha256):
     return struct(
         compiler = compiler,
         version = version,
         os = os,
-        arch = arch,
+        cpu = cpu,
         url = url,
         sha256 = sha256,
     )
@@ -25,4 +27,5 @@ d_toolchain_attrs = {
         values = d_compilers,
     ),
     "version": attr.string(doc = "Compiler version."),
+    "_toolchain_build_file": attr.label(default = None),
 }
