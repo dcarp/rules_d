@@ -1,4 +1,4 @@
-load("//d:defs.bzl", "d_library", "d_source_library", "d_test")
+load("//d:defs.bzl", "d_library", "d_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -19,8 +19,7 @@ cc_library(
     hdrs = ["native-greeter.h"],
 )
 
-d_source_library(
+filegroup(
     name = "native_greeter",
     srcs = ["native_greeter.d"],
-    deps = [":native_greeter_lib"],
 )

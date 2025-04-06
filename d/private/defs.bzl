@@ -5,6 +5,12 @@ load("//d/private:providers.bzl", "DInfo")
 
 D_FILE_EXTENSIONS = [".d", ".di"]
 
+COMPILATION_MODE_FLAGS = {
+    "dbg": ["-debug", "-g"],
+    "fastbuild": ["-g"],
+    "opt": ["-O", "-release", "-inline"],
+}
+
 def _d_binary_name(name, os):
     """Generate the name of the binary."""
     if os == "linux":
@@ -21,6 +27,7 @@ def _d_binary_impl(ctx):
     toolchain = ctx.toolchains[D_TOOLCHAIN].d_toolchain_info
     output = ctx.actions.declare_file(_d_binary_name(ctx.label.name, toolchain.os))
     args = ctx.actions.args()
+    args.add_all(COMPILATION_MODE_FLAGS[ctx.var["COMPILATION_MODE"]])
     args.add(output, format = "-of=%s")
     args.add_all(ctx.files.srcs)
     ctx.actions.run(
@@ -32,7 +39,7 @@ def _d_binary_impl(ctx):
         progress_message = "Compiling D binary " + ctx.label.name,
         use_default_shell_env = True,
     )
-    return [DefaultInfo(executable = output), DInfo()]
+    return [DefaultInfo(executable = output)]
 
 d_binary = rule(
     implementation = _d_binary_impl,
@@ -64,6 +71,7 @@ def _d_library_impl(ctx):
         _static_library_name(ctx.label.name, toolchain.os),
     )
     args = ctx.actions.args()
+    args.add_all(COMPILATION_MODE_FLAGS[ctx.var["COMPILATION_MODE"]])
     args.add(output, format = "-of=%s")
     args.add("-lib")
     args.add_all(ctx.files.srcs)
@@ -95,6 +103,7 @@ def _d_test_impl(ctx):
     toolchain = ctx.toolchains[D_TOOLCHAIN].d_toolchain_info
     output = ctx.actions.declare_file(_d_binary_name(ctx.label.name, toolchain.os))
     args = ctx.actions.args()
+    args.add_all(COMPILATION_MODE_FLAGS[ctx.var["COMPILATION_MODE"]])
     args.add(output, format = "-of=%s")
     args.add("-main")
     args.add("-unittest")
@@ -108,7 +117,7 @@ def _d_test_impl(ctx):
         progress_message = "Compiling D binary " + ctx.label.name,
         use_default_shell_env = True,
     )
-    return [DefaultInfo(executable = output), DInfo()]
+    return [DefaultInfo(executable = output)]
 
 d_test = rule(
     implementation = _d_test_impl,
