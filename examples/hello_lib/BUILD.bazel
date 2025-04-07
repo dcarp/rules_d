@@ -1,4 +1,5 @@
-load("//d:defs.bzl", "d_library", "d_test")
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("@rules_d//d:defs.bzl", "d_library", "d_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -19,7 +20,9 @@ cc_library(
     hdrs = ["native-greeter.h"],
 )
 
-filegroup(
+d_library(
     name = "native_greeter",
     srcs = ["native_greeter.d"],
+    source_only = True,
+    deps = [":native_greeter_lib"],
 )

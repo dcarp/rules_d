@@ -1,5 +1,6 @@
 """D rule implementations."""
 
+load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 load("//d/private:common.bzl", "D_TOOLCHAIN")
 load("//d/private:providers.bzl", "DInfo")
 
@@ -9,6 +10,22 @@ COMPILATION_MODE_FLAGS = {
     "dbg": ["-debug", "-g"],
     "fastbuild": ["-g"],
     "opt": ["-O", "-release", "-inline"],
+}
+
+common_attrs = {
+    "srcs": attr.label_list(
+        doc = "List of D '.d' or '.di' source files.",
+        allow_files = D_FILE_EXTENSIONS,
+    ),
+    "deps": attr.label_list(
+        doc = "List of dependencies.",
+        providers = [[CcInfo], [DInfo]],
+        allow_empty = True,
+    ),
+    "versions": attr.string_list(
+        doc = "List of version identifiers.",
+        allow_empty = True,
+    ),
 }
 
 def _d_binary_name(name, os):
@@ -43,12 +60,7 @@ def _d_binary_impl(ctx):
 
 d_binary = rule(
     implementation = _d_binary_impl,
-    attrs = {
-        "srcs": attr.label_list(
-            doc = "List of D '.d' or '.di' source files.",
-            allow_files = D_FILE_EXTENSIONS,
-        ),
-    },
+    attrs = common_attrs,
     toolchains = [D_TOOLCHAIN],
     executable = True,
 )
@@ -88,14 +100,17 @@ def _d_library_impl(ctx):
 
 d_library = rule(
     implementation = _d_library_impl,
-    attrs = {
-        "srcs": attr.label_list(
-            doc = "List of D '.d' or '.di' source files.",
-            allow_files = D_FILE_EXTENSIONS,
-        ),
-    },
-    fragments = ["platform"],
+    attrs = dict(
+        common_attrs.items() +
+        {
+            "source_only": attr.bool(
+                doc = "If true, the source files are compiled, but not library is produced.",
+                default = False,
+            ),
+        }.items(),
+    ),
     toolchains = [D_TOOLCHAIN],
+    provides = [DInfo],
 )
 
 def _d_test_impl(ctx):
@@ -121,12 +136,7 @@ def _d_test_impl(ctx):
 
 d_test = rule(
     implementation = _d_test_impl,
-    attrs = {
-        "srcs": attr.label_list(
-            doc = "List of D '.d' or '.di' source files.",
-            allow_files = D_FILE_EXTENSIONS,
-        ),
-    },
+    attrs = common_attrs,
     toolchains = [D_TOOLCHAIN],
     test = True,
 )

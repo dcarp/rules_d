@@ -1,4 +1,4 @@
-"""Legacy D rules"""
+"""This file is deprecated. Use the definitions in defs.bzl instead."""
 
 def d_binary(*args, **kwargs):  # buildifier: disable=unused-variable
     """Deprecated. Use d_binary from @d_rules//d:defs.bzl instead."""
@@ -17,9 +17,9 @@ def d_library(*args, **kwargs):  # buildifier: disable=unused-variable
     )
 
 def d_source_library(*args, **kwargs):  # buildifier: disable=unused-variable
-    """Deprecated. Use filegroup or d_library from @d_rules//d:defs.bzl instead."""
+    """Deprecated. Use d_library with source_only = True from @d_rules//d:defs.bzl instead."""
     fail(
-        "@io_bazel_rules_d//d:d.bzl is deprecated. Use filegroup or d_library from @d_rules//d:defs.bzl instead.",
+        "@io_bazel_rules_d//d:d.bzl is deprecated. Use d_library with source_only = True from @d_rules//d:defs.bzl instead.",
     )
 
 def d_test(*args, **kwargs):  # buildifier: disable=unused-variable
