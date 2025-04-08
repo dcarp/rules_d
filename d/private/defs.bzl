@@ -16,16 +16,12 @@ common_attrs = {
     "srcs": attr.label_list(
         doc = "List of D '.d' or '.di' source files.",
         allow_files = D_FILE_EXTENSIONS,
+        allow_empty = False,
     ),
-    "deps": attr.label_list(
-        doc = "List of dependencies.",
-        providers = [[CcInfo], [DInfo]],
-        allow_empty = True,
-    ),
-    "versions": attr.string_list(
-        doc = "List of version identifiers.",
-        allow_empty = True,
-    ),
+    "deps": attr.label_list(doc = "List of dependencies.", providers = [[CcInfo], [DInfo]]),
+    "import_files": attr.label_list(doc = "List of import files."),
+    "import_paths": attr.string_list(doc = "List of import paths."),
+    "versions": attr.string_list(doc = "List of version identifiers."),
 }
 
 def _d_binary_name(name, os):
@@ -47,6 +43,8 @@ def _d_binary_impl(ctx):
     args.add_all(COMPILATION_MODE_FLAGS[ctx.var["COMPILATION_MODE"]])
     args.add(output, format = "-of=%s")
     args.add_all(ctx.files.srcs)
+    args.add_all(toolchain.compiler_flags)
+    args.add_all(toolchain.linker_flags)
     ctx.actions.run(
         inputs = ctx.files.srcs,
         outputs = [output],
@@ -87,6 +85,7 @@ def _d_library_impl(ctx):
     args.add(output, format = "-of=%s")
     args.add("-lib")
     args.add_all(ctx.files.srcs)
+    args.add_all(toolchain.compiler_flags)
     ctx.actions.run(
         inputs = ctx.files.srcs,
         outputs = [output],
@@ -95,7 +94,6 @@ def _d_library_impl(ctx):
         mnemonic = "Dcompile",
         progress_message = "Compiling D library " + ctx.label.name,
     )
-
     return [DefaultInfo(files = depset([output])), DInfo()]
 
 d_library = rule(
@@ -103,9 +101,9 @@ d_library = rule(
     attrs = dict(
         common_attrs.items() +
         {
+            "module_paths": attr.string_list(doc = "List of module paths."),
             "source_only": attr.bool(
                 doc = "If true, the source files are compiled, but not library is produced.",
-                default = False,
             ),
         }.items(),
     ),
@@ -120,12 +118,14 @@ def _d_test_impl(ctx):
     args = ctx.actions.args()
     args.add_all(COMPILATION_MODE_FLAGS[ctx.var["COMPILATION_MODE"]])
     args.add(output, format = "-of=%s")
-    args.add("-main")
-    args.add("-unittest")
+    args.add_all(["-main", "-unittest"])
     args.add_all(ctx.files.srcs)
+    args.add_all(toolchain.compiler_flags)
+    args.add_all(toolchain.linker_flags)
     ctx.actions.run(
         inputs = ctx.files.srcs,
         outputs = [output],
+        tools = [toolchain.compiler[DefaultInfo].default_runfiles.files],
         executable = toolchain.compiler[DefaultInfo].files_to_run,
         arguments = [args],
         mnemonic = "Dcompile",

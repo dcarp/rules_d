@@ -27,7 +27,7 @@ def _archive_prefix(url):
                 return filename[:-len(ext)]
         return filename
     else:
-        fail("Unknown compiler archive {}".format(filename))
+        fail("Unknown compiler archive %s" % filename)
 
 def _d_toolchains_repo_impl(repository_ctx):
     os = _canonical_os(repository_ctx.os.name)
@@ -42,12 +42,8 @@ def _d_toolchains_repo_impl(repository_ctx):
     ]
     if not compilers:
         fail(
-            "No compiler {}-{}-{}-{} found".format(
-                repository_ctx.attr.compiler,
-                repository_ctx.attr.version,
-                os,
-                cpu,
-            ),
+            "%s version %s not available for %s/%s" %
+            (repository_ctx.attr.compiler, repository_ctx.attr.version, os, cpu),
         )
     if len(compilers) > 1:
         fail("More than one compiler found")
@@ -61,9 +57,7 @@ def _d_toolchains_repo_impl(repository_ctx):
     if repository_ctx.attr._toolchain_build_file:
         toolchain_build_file = repository_ctx.attr._toolchain_build_file
     else:
-        toolchain_build_file = Label(
-            ":BUILD.{}_toolchain.bazel".format(repository_ctx.attr.compiler),
-        )
+        toolchain_build_file = Label(":BUILD.%s_toolchain.bazel" % repository_ctx.attr.compiler)
 
     repository_ctx.file(
         "BUILD.bazel",

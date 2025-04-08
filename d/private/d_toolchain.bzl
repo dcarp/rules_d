@@ -5,15 +5,18 @@ DToolchainInfo = provider(
     fields = {
         "all_files": "All files in the toolchain.",
         "compiler": "The D compiler executable.",
+        "compiler_flags": "Compiler flags.",
         "cpu": "Target CPU of the D toolchain.",
-        "druntime_import_path": "The path to the D runtime library.",
         "dub": "The dub executable.",
-        "dynamic_stdlib": "The dynamic runtime library.",
+        "linker_flags": "Linker flags.",
         "os": "Target OS of the D toolchain.",
-        "static_stdlib": "The static runtime library.",
-        "stdlib_import_path": "The path to the standard library.",
     },
 )
+
+def _expand_toolchain_variables(input, ctx):
+    """Expand toolchain variables in the input string."""
+    d_toolchain_root = ctx.attr.compiler[DefaultInfo].files_to_run.executable.dirname
+    return input.format(D_TOOLCHAIN_ROOT = d_toolchain_root)
 
 def _d_toolchain_impl(ctx):
     return [
@@ -21,13 +24,11 @@ def _d_toolchain_impl(ctx):
             d_toolchain_info = DToolchainInfo(
                 all_files = ctx.attr.all_files,
                 compiler = ctx.attr.compiler,
+                compiler_flags = [_expand_toolchain_variables(cf, ctx) for cf in ctx.attr.compiler_flags],
                 cpu = ctx.attr.cpu,
-                druntime_import_path = ctx.attr.druntime_import_path,
                 dub = ctx.attr.dub,
-                dynamic_stdlib = ctx.attr.dynamic_stdlib,
+                linker_flags = [_expand_toolchain_variables(lf, ctx) for lf in ctx.attr.linker_flags],
                 os = ctx.attr.os,
-                static_stdlib = ctx.attr.static_stdlib,
-                stdlib_import_path = ctx.attr.stdlib_import_path,
             ),
         ),
     ]
@@ -37,38 +38,34 @@ d_toolchain = rule(
     implementation = _d_toolchain_impl,
     attrs = {
         "all_files": attr.label(
-            allow_files = True,
             doc = "All files in the toolchain.",
+            allow_files = True,
         ),
         "compiler": attr.label(
-            mandatory = True,
-            executable = True,
-            cfg = "exec",
             doc = "The D compiler.",
+            executable = True,
+            allow_single_file = True,
+            mandatory = True,
+            cfg = "exec",
+        ),
+        "compiler_flags": attr.string_list(
+            doc = "Compiler flags.",
         ),
         "cpu": attr.string(
             doc = "Target CPU for the toolchain.",
-        ),
-        "druntime_import_path": attr.string(
-            doc = "Path to the D runtime library.",
+            mandatory = True,
         ),
         "dub": attr.label(
+            doc = "The dub executable.",
             executable = True,
             cfg = "exec",
-            doc = "The dub executable.",
         ),
-        "dynamic_stdlib": attr.label(
-            doc = "The dynamic runtime library.",
+        "linker_flags": attr.string_list(
+            doc = "Linker flags.",
         ),
         "os": attr.string(
-            mandatory = True,
             doc = "Target OS for the toolchain.",
-        ),
-        "static_stdlib": attr.label(
-            doc = "The static runtime library.",
-        ),
-        "stdlib_import_path": attr.string(
-            doc = "Path to the standard library.",
+            mandatory = True,
         ),
     },
     provides = [platform_common.ToolchainInfo],
