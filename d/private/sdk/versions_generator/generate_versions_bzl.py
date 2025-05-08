@@ -239,7 +239,10 @@ def group_by_compiler_version(
     releases: list[CompilerReleaseInfo],
 ) -> dict[str, CompilerReleaseInfo]:
     return {
-        f"{k[0]}-{k[1]}": {platform_id(p.os, p.cpu): p.integrity for p in v}
+        f"{k[0]}-{k[1]}": {
+            platform_id(p.os, p.cpu): {"url": p.url, "integrity": p.integrity}
+            for p in v
+        }
         for k, v in groupby(
             sorted(releases, key=lambda r: [r.compiler, semver_to_tuple(r.version)]),
             key=lambda r: [r.compiler, r.version],

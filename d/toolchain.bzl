@@ -34,7 +34,8 @@ def _d_toolchain_impl(ctx):
     # Make the $(tool_BIN) variable available in places like genrules.
     # See https://docs.bazel.build/versions/main/be/make-variables.html#custom_variables
     template_variables = platform_common.TemplateVariableInfo({
-        "D_BIN": target_tool_path,
+        "DC": ctx.attr.compiler.path,
+        "DUB": ctx.attr.dub.path,
     })
     default = DefaultInfo(
         files = depset(tool_files),
@@ -48,9 +49,9 @@ def _d_toolchain_impl(ctx):
     # Export all the providers inside our ToolchainInfo
     # so the resolved_toolchain rule can grab and re-export them.
     toolchain_info = platform_common.ToolchainInfo(
+        default = default,
         dinfo = dinfo,
         template_variables = template_variables,
-        default = default,
     )
     return [
         default,
@@ -61,14 +62,31 @@ def _d_toolchain_impl(ctx):
 d_toolchain = rule(
     implementation = _d_toolchain_impl,
     attrs = {
-        "target_tool": attr.label(
-            doc = "A hermetically downloaded executable target for the target platform.",
-            mandatory = False,
-            allow_single_file = True,
+        "all_files": attr.label(
+            doc = "All files in the toolchain.",
+            allow_files = True,
         ),
-        "target_tool_path": attr.string(
-            doc = "Path to an existing executable for the target platform.",
-            mandatory = False,
+        "d_compiler": attr.label(
+            doc = "The D compiler.",
+            executable = True,
+            mandatory = True,
+            cfg = "exec",
+        ),
+        "compiler_flags": attr.string_list(
+            doc = "Compiler flags.",
+        ),
+        "dub_tool": attr.label(
+            doc = "The dub package manager.",
+            executable = True,
+            cfg = "exec",
+        ),
+        "linker_flags": attr.string_list(
+            doc = "Linker flags.",
+        ),
+        "rdmd_tool": attr.label(
+            doc = "The rdmd compile and execute utility.",
+            executable = True,
+            cfg = "exec",
         ),
     },
     doc = """Defines a d compiler/runtime toolchain.

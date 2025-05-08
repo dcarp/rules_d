@@ -11,3 +11,9 @@ bzl_library(
     srcs = ["resolved_toolchain.bzl"],
     visibility = ["//d:__subpackages__"],
 )
+
+bzl_library(
+    name = "providers",
+    srcs = ["providers.bzl"],
+    visibility = ["//d:__subpackages__"],
+)
