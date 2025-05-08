@@ -1,0 +1,7 @@
+load("@rules_d//d:defs.bzl", "d_test")
+
+d_test(
+    name = "d_library_usage",
+    srcs = ["d_library_usage.d"],
+    deps = ["//tests/simple_d_library"],
+)

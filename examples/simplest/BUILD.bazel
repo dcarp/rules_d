@@ -1,0 +1,6 @@
+load("@rules_d//d:defs.bzl", "d_test")
+
+d_test(
+    name = "simplest",
+    srcs = ["simplest.d"],
+)
