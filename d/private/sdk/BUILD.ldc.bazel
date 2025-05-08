@@ -1,0 +1,119 @@
+load("@rules_d//d/private:common.bzl", "D_TOOLCHAIN")
+load("@rules_d//d/private:d_toolchain.bzl", "d_toolchain")
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+
+PLATFORMS = [
+    ("linux", "aarch64"),
+    ("linux", "x86_64"),
+    ("macos", "aarch64"),
+    ("macos", "x86_64"),
+]
+
+filegroup(
+    name = "all_files",
+    srcs = [
+        ":compiler_files",
+        ":dmd",
+        ":dub",
+        ":rdmd",
+    ],
+)
+
+filegroup(
+    name = "compiler_files",
+    srcs = [
+        ":druntime_files",
+        ":phobos_files",
+    ],
+)
+
+filegroup(
+    name = "druntime_files",
+    srcs = glob([
+        "import/core/**",
+        "import/etc/**",
+    ]) + ["import/object.d"],
+)
+
+filegroup(
+    name = "phobos_files",
+    srcs = glob(["import/std/**"]),
+)
+
+sh_binary(
+    name = "dmd",
+    srcs = ["bin/ldmd2"],
+    data = [":compiler_files"],
+    visibility = ["@rules_d//d:__subpackages__"],
+)
+
+filegroup(
+    name = "dynamic_phobos_linux",
+    srcs = ["lib/libphobos2-ldc-shared.so"],
+)
+
+filegroup(
+    name = "dynamic_phobos_macos",
+    srcs = ["lib/libphobos2-ldc-shared.dylib"],
+)
+
+alias(
+    name = "dynamic_phobos",
+    actual = select({
+        "@platforms//os:linux": ":dynamic_phobos_linux",
+        "@platforms//os:macos": ":dynamic_phobos_macos",
+    }),
+)
+
+filegroup(
+    name = "static_phobos",
+    srcs = ["lib/libphobos2-ldc.a"],
+)
+
+[
+    d_toolchain(
+        name = "dmd_%s_%s_toolchain" % (os, cpu),
+        all_files = ":all_files",
+        compiler = ":dmd",
+        cpu = cpu,
+        druntime_import_path = "import",
+        dub = ":dub",
+        dynamic_stdlib = ":dynamic_phobos_%s" % os,
+        os = os,
+        static_stdlib = ":static_phobos",
+        stdlib_import_path = "import",
+    )
+    for os, cpu in PLATFORMS
+]
+
+[
+    toolchain(
+        name = "dmd_%s_%s_d_toolchain" % (os, cpu),
+        exec_compatible_with = [
+            "@platforms//os:%s" % os,
+            "@platforms//cpu:%s" % cpu,
+        ],
+        tags = ["manual"],
+        target_compatible_with = [
+            "@platforms//os:%s" % os,
+            "@platforms//cpu:%s" % cpu,
+        ],
+        toolchain = ":dmd_%s_%s_toolchain" % (os, cpu),
+        toolchain_type = D_TOOLCHAIN,
+        visibility = ["//visibility:public"],
+    )
+    for os, cpu in PLATFORMS
+]
+
+sh_binary(
+    name = "dub",
+    srcs = ["bin/dub"],
+    visibility = ["@rules_d//d:__subpackages__"],
+)
+
+sh_binary(
+    name = "rdmd",
+    srcs = ["bin/rdmd"],
+    data = [":compiler_files"],
+    visibility = ["@rules_d//d:__subpackages__"],
+)
