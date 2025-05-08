@@ -1,31 +1,12 @@
-load("@rules_d//d:d_toolchain.bzl", "d_toolchain")
-
-PLATFORMS = [
-    ("linux", "x86_64"),
-    ("macos", "x86_64"),
-    ("windows", "x86_64"),
-]
+load("@rules_d//d:toolchain.bzl", "d_toolchain")
 
 filegroup(
     name = "all_files",
     srcs = [
-        ":compiler_files",
         ":dmd",
         ":dub",
         ":rdmd",
     ],
-)
-
-filegroup(
-    name = "compiler_files",
-    srcs = [
-        ":druntime_files",
-        ":phobos_files",
-    ] + select({
-        "@platforms//os:linux": [":stdlib_files_linux"],
-        "@platforms//os:macos": [":stdlib_files_macos"],
-        "@platforms//os:windows": [":stdlib_files_windows"],
-    }),
 )
 
 filegroup(
@@ -39,148 +20,50 @@ filegroup(
 )
 
 filegroup(
-    name = "stdlib_files_linux",
-    srcs = glob(
-        ["linux/lib64/**"],
-        allow_empty = True,
-    ),
+    name = "stdlib_files",
+    srcs = select({
+        "@bazel_tools//platforms:linux": glob(["linux/lib64/**"]),
+        "@bazel_tools//platforms:macos": glob(["osx/lib64/**"]),
+        "@bazel_tools//platforms:windows": glob(["windows/lib64/**"]),
+    }),
 )
 
 filegroup(
-    name = "stdlib_files_macos",
-    srcs = glob(
-        ["osx/lib64/**"],
-        allow_empty = True,
-    ),
-)
-
-filegroup(
-    name = "stdlib_files_windows",
-    srcs = glob(
-        ["windows/lib64/**"],
-        allow_empty = True,
-    ),
-)
-
-filegroup(
-    name = "dmd_linux",
-    srcs = ["linux/bin64/dmd"],
-    data = [":compiler_files"],
-)
-
-filegroup(
-    name = "dmd_macos",
-    srcs = ["osx/bin64/dmd"],
-    data = [":compiler_files"],
-)
-
-filegroup(
-    name = "dmd_windows",
-    srcs = ["windows/bin64/dmd.exe"],
-    data = [":compiler_files"],
-)
-
-sh_binary(
     name = "dmd",
     srcs = select({
-        "@platforms//os:linux": [":dmd_linux"],
-        "@platforms//os:macos": [":dmd_macos"],
-        "@platforms//os:windows": [":dmd_windows"],
+        "@platforms//os:linux": ["linux/bin64/dmd"],
+        "@platforms//os:macos": ["osx/bin64/dmd"],
+        "@platforms//os:windows": ["windows/bin64/dmd.exe"],
     }),
-    visibility = ["@rules_d//d:__subpackages__"],
-)
-
-[
-    d_toolchain(
-        name = "dmd_%s_%s_toolchain" % (os, cpu),
-        all_files = ":all_files",
-        compiler = ":dmd_%s" % os,
-        compiler_flags = [
-            "-conf=",
-            "-I={D_TOOLCHAIN_ROOT}/src/druntime/import",
-            "-I={D_TOOLCHAIN_ROOT}/src/phobos",
-            "-fPIC",
-        ],
-        cpu = cpu,
-        dub = ":dub_%s" % os,
-        linker_flags = [
-            "-conf=",
-            "-L=-L{D_TOOLCHAIN_ROOT}/%s/lib64" % os,
-            "-L--export-dynamic",
-        ],
-        os = os,
-    )
-    for os, cpu in PLATFORMS
-]
-
-[
-    toolchain(
-        name = "dmd_%s_%s_d_toolchain" % (os, cpu),
-        exec_compatible_with = [
-            "@platforms//os:%s" % os,
-            "@platforms//cpu:%s" % cpu,
-        ],
-        tags = ["manual"],
-        target_compatible_with = [
-            "@platforms//os:%s" % os,
-            "@platforms//cpu:%s" % cpu,
-        ],
-        toolchain = ":dmd_%s_%s_toolchain" % (os, cpu),
-        toolchain_type = D_TOOLCHAIN,
-        visibility = ["//visibility:public"],
-    )
-    for os, cpu in PLATFORMS
-]
-
-filegroup(
-    name = "dub_linux",
-    srcs = ["linux/bin64/dub"],
+    data = [
+        ":druntime_files",
+        ":phobos_files",
+        ":stdlib_files",
+    ],
 )
 
 filegroup(
-    name = "dub_macos",
-    srcs = ["osx/bin64/dub"],
-)
-
-filegroup(
-    name = "dub_windows",
-    srcs = ["windows/bin64/dub.exe"],
-)
-
-sh_binary(
     name = "dub",
     srcs = select({
-        "@platforms//os:linux": [":dub_linux"],
-        "@platforms//os:macos": [":dub_macos"],
-        "@platforms//os:windows": [":dub_windows"],
+        "@platforms//os:linux": ["linux/bin64/dub"],
+        "@platforms//os:macos": ["osx/bin64/dub"],
+        "@platforms//os:windows": ["windows/bin64/dub.exe"],
     }),
-    visibility = ["@rules_d//d:__subpackages__"],
 )
 
 filegroup(
-    name = "rdmd_linux",
-    srcs = ["linux/bin64/rdmd"],
-    data = [":compiler_files"],
-)
-
-filegroup(
-    name = "rdmd_macos",
-    srcs = ["osx/bin64/rdmd"],
-    data = [":compiler_files"],
-)
-
-filegroup(
-    name = "rdmd_windows",
-    srcs = ["windows/bin64/rdmd.exe"],
-    data = [":compiler_files"],
-)
-
-sh_binary(
     name = "rdmd",
     srcs = select({
-        "@platforms//os:linux": [":rdmd_linux"],
-        "@platforms//os:macos": [":rdmd_macos"],
-        "@platforms//os:windows": [":rdmd_windows"],
+        "@platforms//os:linux": ["linux/bin64/rdmd"],
+        "@platforms//os:macos": ["osx/bin64/rdmd"],
+        "@platforms//os:windows": ["windows/bin64/rdmd.exe"],
     }),
-    visibility = ["@rules_d//d:__subpackages__"],
+    data = [":dmd"],
+)
+
+d_toolchain(
+    name = "d_toolchain",
+    d_compiler = ":dmd",
+    dub_tool = ":dub",
+    rdmd_tool = ":rdmd",
 )
