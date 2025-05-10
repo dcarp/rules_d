@@ -1,0 +1,69 @@
+load("@rules_d//d:toolchain.bzl", "d_toolchain")
+
+filegroup(
+    name = "all_files",
+    srcs = [
+        ":dmd",
+        ":dub",
+        ":rdmd",
+    ],
+)
+
+filegroup(
+    name = "druntime_files",
+    srcs = glob(["src/druntime/import/**"]),
+)
+
+filegroup(
+    name = "phobos_files",
+    srcs = glob(["src/phobos/**"]),
+)
+
+filegroup(
+    name = "stdlib_files",
+    srcs = select({
+        "@bazel_tools//platforms:linux": glob(["linux/lib64/**"]),
+        "@bazel_tools//platforms:macos": glob(["osx/lib64/**"]),
+        "@bazel_tools//platforms:windows": glob(["windows/lib64/**"]),
+    }),
+)
+
+filegroup(
+    name = "dmd",
+    srcs = select({
+        "@platforms//os:linux": ["linux/bin64/dmd"],
+        "@platforms//os:macos": ["osx/bin64/dmd"],
+        "@platforms//os:windows": ["windows/bin64/dmd.exe"],
+    }),
+    data = [
+        ":druntime_files",
+        ":phobos_files",
+        ":stdlib_files",
+    ],
+)
+
+filegroup(
+    name = "dub",
+    srcs = select({
+        "@platforms//os:linux": ["linux/bin64/dub"],
+        "@platforms//os:macos": ["osx/bin64/dub"],
+        "@platforms//os:windows": ["windows/bin64/dub.exe"],
+    }),
+)
+
+filegroup(
+    name = "rdmd",
+    srcs = select({
+        "@platforms//os:linux": ["linux/bin64/rdmd"],
+        "@platforms//os:macos": ["osx/bin64/rdmd"],
+        "@platforms//os:windows": ["windows/bin64/rdmd.exe"],
+    }),
+    data = [":dmd"],
+)
+
+d_toolchain(
+    name = "d_toolchain",
+    d_compiler = ":dmd",
+    dub_tool = ":dub",
+    rdmd_tool = ":rdmd",
+)
