@@ -1,5 +1,5 @@
-"Public API of D rules."
+"Public API re-exports"
 
-load("//d/private/rules:library.bzl", _d_library = "d_library")
-
-d_library = _d_library
+def example():
+    """This is an example"""
+    pass
