@@ -39,6 +39,18 @@ _ATTRS = {
     "platform": attr.string(mandatory = True, values = PLATFORMS.keys()),
 }
 
+def _archive_prefix(url):
+    filename = url.rsplit("/", 1)[-1]
+    if filename.startswith("dmd"):
+        return "dmd2"
+    elif filename.startswith("ldc"):
+        for ext in [".tar.xz", ".zip"]:
+            if filename.endswith(ext):
+                return filename[:-len(ext)]
+        return filename
+    else:
+        fail("Unknown compiler archive %s" % filename)
+
 def _d_repo_impl(repository_ctx):
     d_version = repository_ctx.attr.d_version
     platform = repository_ctx.attr.platform
@@ -47,7 +59,11 @@ def _d_repo_impl(repository_ctx):
     if platform not in SDK_VERSIONS[d_version]:
         repository_ctx.fail("Unsupported platform: %s for %s" % (platform, d_version))
     sdk = SDK_VERSIONS[d_version][platform]
-    repository_ctx.download_and_extract(url = sdk["url"], integrity = sdk["integrity"])
+    repository_ctx.download_and_extract(
+        url = sdk["url"],
+        integrity = sdk["integrity"],
+        stripPrefix = _archive_prefix(sdk["url"]),
+    )
     build_bazel_template = "@rules_d//d/private/sdk:BUILD.%s.bazel" % d_version[0:3]
 
     # Base BUILD file for this repository
@@ -75,11 +91,7 @@ def d_register_toolchains(name, register = True, **kwargs):
         **kwargs: passed to each d_repositories call
     """
     for platform in PLATFORMS.keys():
-        d_repositories(
-            name = name + "_" + platform,
-            platform = platform,
-            **kwargs
-        )
+        d_repositories(name = name + "_" + platform, platform = platform, **kwargs)
         if register:
             native.register_toolchains("@%s_toolchains//:%s_toolchain" % (name, platform))
 

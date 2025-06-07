@@ -21,4 +21,7 @@ common_attrs = {
     "import_files": attr.label_list(doc = "List of import files."),
     "import_paths": attr.string_list(doc = "List of import paths."),
     "versions": attr.string_list(doc = "List of version identifiers."),
+    "_linux_constraint": attr.label(default = "@platforms//os:linux", doc = "Linux platform constraint"),
+    "_macos_constraint": attr.label(default = "@platforms//os:macos", doc = "macOS platform constraint"),
+    "_windows_constraint": attr.label(default = "@platforms//os:windows", doc = "Windows platform constraint"),
 }

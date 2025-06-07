@@ -1,13 +1,15 @@
-"""This module implements the language-specific toolchain rule.
+"""This module implements the D toolchain rule.
 """
 
-DInfo = provider(
-    doc = "Information about how to invoke the tool executable.",
+DToolchainInfo = provider(
+    doc = "D compiler information.",
     fields = {
-        "target_tool_path": "Path to the tool executable for the target platform.",
-        "tool_files": """Files required in runfiles to make the tool executable available.
-
-May be empty if the target_tool_path points to a locally installed tool binary.""",
+        "all_files": "All files in the toolchain.",
+        "d_compiler": "The D compiler executable.",
+        "compiler_flags": "Default compiler flags.",
+        "dub_tool": "The dub package manager executable.",
+        "linker_flags": "Default linker flags.",
+        "rdmd_tool": "The rdmd compile and execute utility.",
     },
 )
 
@@ -19,38 +21,43 @@ def _to_manifest_path(ctx, file):
         return ctx.workspace_name + "/" + file.short_path
 
 def _d_toolchain_impl(ctx):
-    if ctx.attr.target_tool and ctx.attr.target_tool_path:
-        fail("Can only set one of target_tool or target_tool_path but both were set.")
-    if not ctx.attr.target_tool and not ctx.attr.target_tool_path:
-        fail("Must set one of target_tool or target_tool_path.")
-
-    tool_files = []
-    target_tool_path = ctx.attr.target_tool_path
-
-    if ctx.attr.target_tool:
-        tool_files = ctx.attr.target_tool.files.to_list()
-        target_tool_path = _to_manifest_path(ctx, tool_files[0])
+    d_toolchain_files = depset(
+        direct = [
+            ctx.attr.d_compiler.files.to_list()[0],
+            ctx.attr.dub_tool.files.to_list()[0],
+            ctx.attr.rdmd_tool.files.to_list()[0],
+        ],
+        transitive = [
+            ctx.attr.d_compiler.files,
+            ctx.attr.dub_tool.files,
+            ctx.attr.rdmd_tool.files,
+        ],
+    )
 
     # Make the $(tool_BIN) variable available in places like genrules.
     # See https://docs.bazel.build/versions/main/be/make-variables.html#custom_variables
     template_variables = platform_common.TemplateVariableInfo({
-        "DC": ctx.attr.compiler.path,
-        "DUB": ctx.attr.dub.path,
+        "DC": _to_manifest_path(ctx, ctx.attr.d_compiler.files.to_list()[0]),
+        "DUB": _to_manifest_path(ctx, ctx.attr.dub_tool.files.to_list()[0]),
     })
     default = DefaultInfo(
-        files = depset(tool_files),
-        runfiles = ctx.runfiles(files = tool_files),
+        files = d_toolchain_files,
+        runfiles = ctx.runfiles(files = d_toolchain_files.to_list()),
     )
-    dinfo = DInfo(
-        target_tool_path = target_tool_path,
-        tool_files = tool_files,
+    d_toolchain_info = DToolchainInfo(
+        all_files = d_toolchain_files,
+        d_compiler = ctx.attr.d_compiler,
+        compiler_flags = ctx.attr.compiler_flags,
+        dub_tool = ctx.attr.dub_tool,
+        linker_flags = ctx.attr.linker_flags,
+        rdmd_tool = ctx.attr.rdmd_tool,
     )
 
     # Export all the providers inside our ToolchainInfo
     # so the resolved_toolchain rule can grab and re-export them.
     toolchain_info = platform_common.ToolchainInfo(
         default = default,
-        dinfo = dinfo,
+        d_toolchain_info = d_toolchain_info,
         template_variables = template_variables,
     )
     return [
@@ -62,10 +69,6 @@ def _d_toolchain_impl(ctx):
 d_toolchain = rule(
     implementation = _d_toolchain_impl,
     attrs = {
-        "all_files": attr.label(
-            doc = "All files in the toolchain.",
-            allow_files = True,
-        ),
         "d_compiler": attr.label(
             doc = "The D compiler.",
             executable = True,

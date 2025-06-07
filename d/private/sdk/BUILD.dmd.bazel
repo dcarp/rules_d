@@ -22,9 +22,18 @@ filegroup(
 filegroup(
     name = "stdlib_files",
     srcs = select({
-        "@bazel_tools//platforms:linux": glob(["linux/lib64/**"]),
-        "@bazel_tools//platforms:macos": glob(["osx/lib64/**"]),
-        "@bazel_tools//platforms:windows": glob(["windows/lib64/**"]),
+        "@platforms//os:linux": glob(
+            ["linux/lib64/**"],
+            allow_empty = True,
+        ),
+        "@platforms//os:macos": glob(
+            ["osx/lib64/**"],
+            allow_empty = True,
+        ),
+        "@platforms//os:windows": glob(
+            ["windows/lib64/**"],
+            allow_empty = True,
+        ),
     }),
 )
 
