@@ -27,7 +27,7 @@ filegroup(
             allow_empty = True,
         ),
         "@platforms//os:macos": glob(
-            ["osx/lib64/**"],
+            ["osx/lib/**"],
             allow_empty = True,
         ),
         "@platforms//os:windows": glob(
@@ -41,7 +41,7 @@ filegroup(
     name = "dmd",
     srcs = select({
         "@platforms//os:linux": ["linux/bin64/dmd"],
-        "@platforms//os:macos": ["osx/bin64/dmd"],
+        "@platforms//os:macos": ["osx/bin/dmd"],
         "@platforms//os:windows": ["windows/bin64/dmd.exe"],
     }),
     data = [
@@ -55,7 +55,7 @@ filegroup(
     name = "dub",
     srcs = select({
         "@platforms//os:linux": ["linux/bin64/dub"],
-        "@platforms//os:macos": ["osx/bin64/dub"],
+        "@platforms//os:macos": ["osx/bin/dub"],
         "@platforms//os:windows": ["windows/bin64/dub.exe"],
     }),
 )
@@ -64,7 +64,7 @@ filegroup(
     name = "rdmd",
     srcs = select({
         "@platforms//os:linux": ["linux/bin64/rdmd"],
-        "@platforms//os:macos": ["osx/bin64/rdmd"],
+        "@platforms//os:macos": ["osx/bin/rdmd"],
         "@platforms//os:windows": ["windows/bin64/rdmd.exe"],
     }),
     data = [":dmd"],
