@@ -37,3 +37,13 @@ bzl_library(
     ],
     deps = ["//d/private/rules:common"],
 )
+
+bzl_library(
+    name = "test",
+    srcs = ["test.bzl"],
+    visibility = [
+        "//d:__subpackages__",
+        "//docs:__subpackages__",
+    ],
+    deps = ["//d/private/rules:common"],
+)
