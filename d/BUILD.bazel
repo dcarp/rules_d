@@ -43,7 +43,10 @@ bzl_library(
     name = "defs",
     srcs = ["defs.bzl"],
     visibility = ["//visibility:public"],
-    deps = ["//d/private/rules:library"],
+    deps = [
+        "//d/private/rules:library",
+        "//d/private/rules:test",
+    ],
 )
 
 bzl_library(

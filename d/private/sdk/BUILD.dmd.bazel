@@ -72,7 +72,30 @@ filegroup(
 
 d_toolchain(
     name = "d_toolchain",
+    compiler_flags = [
+        "-conf=",
+        "-I={D_COMPILER_ROOT}/src/druntime/import",
+        "-I={D_COMPILER_ROOT}/src/phobos",
+        "-fPIC",
+    ],
     d_compiler = ":dmd",
     dub_tool = ":dub",
+    linker_flags = select({
+        "@platforms//os:linux": [
+            "-conf=",
+            "-L=-L{D_COMPILER_ROOT}/linux/lib64",
+            "-L--export-dynamic",
+        ],
+        "@platforms//os:macos": [
+            "-conf=",
+            "-L=-L{D_COMPILER_ROOT}/osx/lib64",
+            "-L--export-dynamic",
+        ],
+        "@platforms//os:windows": [
+            "-conf=",
+            "-L=-L{D_COMPILER_ROOT}/windows/lib64",
+            "-L--export-dynamic",
+        ],
+    }),
     rdmd_tool = ":rdmd",
 )
