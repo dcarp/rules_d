@@ -2,6 +2,30 @@
 
 Public API of D rules.
 
+<a id="d_binary"></a>
+
+## d_binary
+
+<pre>
+load("@rules_d//d:defs.bzl", "d_binary")
+
+d_binary(<a href="#d_binary-name">name</a>, <a href="#d_binary-deps">deps</a>, <a href="#d_binary-srcs">srcs</a>, <a href="#d_binary-string_srcs">string_srcs</a>, <a href="#d_binary-versions">versions</a>)
+</pre>
+
+
+
+**ATTRIBUTES**
+
+
+| Name  | Description | Type | Mandatory | Default |
+| :------------- | :------------- | :------------- | :------------- | :------------- |
+| <a id="d_binary-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
+| <a id="d_binary-deps"></a>deps |  List of dependencies.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="d_binary-srcs"></a>srcs |  List of D '.d' or '.di' source files.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="d_binary-string_srcs"></a>string_srcs |  List of string import source files.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="d_binary-versions"></a>versions |  List of version identifiers.   | List of strings | optional |  `[]`  |
+
+
 <a id="d_library"></a>
 
 ## d_library

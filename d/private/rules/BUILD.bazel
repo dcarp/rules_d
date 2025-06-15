@@ -5,15 +5,15 @@ exports_files(
     visibility = ["//docs:__pkg__"],
 )
 
-# bzl_library(
-#     name = "binary",
-#     srcs = ["binary.bzl"],
-#     visibility = [
-#         "//d:__subpackages__",
-#         "//docs:__subpackages__",
-#     ],
-#     deps = ["//d/private/rules:common"],
-# )
+bzl_library(
+    name = "binary",
+    srcs = ["binary.bzl"],
+    visibility = [
+        "//d:__subpackages__",
+        "//docs:__subpackages__",
+    ],
+    deps = ["//d/private/rules:common"],
+)
 
 bzl_library(
     name = "common",
