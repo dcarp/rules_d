@@ -19,7 +19,7 @@ def _dinfo_init(
         "linker_flags": linker_flags or [],
         "source_only": source_only,
         "string_import_paths": string_import_paths or depset(),
-        "versions": versions or [],
+        "versions": versions or depset(),
     }
 
 DInfo, _new_dinfo = provider(
@@ -32,7 +32,7 @@ DInfo, _new_dinfo = provider(
         "linker_flags": "List of linker flags, passed directly to the linker.",
         "source_only": "If true, the source files are compiled, but no library is produced.",
         "string_import_paths": "A depset of string import paths.",
-        "versions": "List of version identifiers.",
+        "versions": "A depset of version identifiers.",
     },
     init = _dinfo_init,
 )

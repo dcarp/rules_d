@@ -1,0 +1,23 @@
+unittest
+{
+    version(Foo)
+    {
+        assert(true);
+    }
+    else
+    {
+        assert(false);
+    }
+}
+
+unittest
+{
+    version(Bar)
+    {
+        assert(false);
+    }
+    else
+    {
+        assert(true);
+    }
+}

@@ -1,0 +1,7 @@
+load("@rules_d//d:defs.bzl", "d_test")
+
+d_test(
+    name = "feature_version",
+    srcs = ["feature_version.d"],
+    versions = ["Foo"],
+)

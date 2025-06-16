@@ -91,12 +91,14 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
         ["."] if ctx.files.string_srcs else [],
         transitive = [d.string_import_paths for d in d_deps],
     )
+    versions = depset(ctx.attr.versions, transitive = [d.versions for d in d_deps])
     args = ctx.actions.args()
     args.add_all(COMPILATION_MODE_FLAGS[ctx.var["COMPILATION_MODE"]])
     args.add_all(ctx.files.srcs)
     args.add_all(import_paths.to_list(), format_each = "-I=%s")
     args.add_all(string_import_paths.to_list(), format_each = "-J=%s")
     args.add_all(toolchain.compiler_flags)
+    args.add_all(versions.to_list(), format_each = "-version=%s")
     output = None
     if target_type in [TARGET_TYPE.BINARY, TARGET_TYPE.TEST]:
         if target_type == TARGET_TYPE.TEST:
@@ -151,6 +153,7 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
                     [ctx.label.package] if ctx.files.string_srcs else [],
                     transitive = [d.string_import_paths for d in d_deps],
                 ),
+                versions = versions,
             ),
         ]
     else:
