@@ -1,4 +1,4 @@
-"rules_d"
+"""Module definition for rules_d."""
 
 module(
     name = "rules_d",

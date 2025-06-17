@@ -29,6 +29,12 @@ def rules_d_dependencies():
             "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.7.1/bazel-skylib-1.7.1.tar.gz",
         ],
     )
+    http_archive(
+        name = "package_metadata",
+        sha256 = "32299ff025ceb859328557fbb3dd42464ad2520e25969188c230b45638feb949",
+        strip_prefix = "supply-chain-0.0.2/metadata",
+        url = "https://github.com/bazel-contrib/supply-chain/releases/download/v0.0.2/supply-chain-v0.0.2.tar.gz",
+    )
 
 ########
 # Remaining content of the file is only used to support toolchains.
