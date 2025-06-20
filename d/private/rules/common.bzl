@@ -111,11 +111,11 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
     args.add_all(toolchain.compiler_flags)
     args.add_all(versions.to_list(), format_each = "-version=%s")
     args.add_all(toolchain.linker_flags)
-    for dep in d_deps:
-        args.add_all(dep.libraries)
-    args.add_all(c_libraries)
     output = None
     if target_type in [TARGET_TYPE.BINARY, TARGET_TYPE.TEST]:
+        for dep in d_deps:
+            args.add_all(dep.libraries)
+        args.add_all(c_libraries)
         if target_type == TARGET_TYPE.TEST:
             args.add_all(["-main", "-unittest"])
         output = ctx.actions.declare_file(_binary_name(ctx, ctx.label.name))
