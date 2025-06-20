@@ -85,6 +85,17 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
         The provider containing the compilation information.
     """
     toolchain = ctx.toolchains["//d:toolchain_type"].d_toolchain_info
+    c_deps = [d[CcInfo] for d in ctx.attr.deps if CcInfo in d]
+    c_linker_inputs = [
+        linker_input
+        for dep in c_deps
+        for linker_input in dep.linking_context.linker_inputs.to_list()
+    ]
+    c_libraries = depset([
+        lib.pic_static_library
+        for li in c_linker_inputs
+        for lib in li.libraries
+    ])
     d_deps = [d[DInfo] for d in ctx.attr.deps if DInfo in d]
     import_paths = depset(transitive = [d.import_paths for d in d_deps])
     string_import_paths = depset(
@@ -99,22 +110,20 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
     args.add_all(string_import_paths.to_list(), format_each = "-J=%s")
     args.add_all(toolchain.compiler_flags)
     args.add_all(versions.to_list(), format_each = "-version=%s")
+    args.add_all(toolchain.linker_flags)
+    for dep in d_deps:
+        args.add_all(dep.libraries)
+    args.add_all(c_libraries)
     output = None
     if target_type in [TARGET_TYPE.BINARY, TARGET_TYPE.TEST]:
         if target_type == TARGET_TYPE.TEST:
             args.add_all(["-main", "-unittest"])
-        args.add_all(toolchain.linker_flags)
-        for dep in d_deps:
-            args.add_all(dep.libraries)
         output = ctx.actions.declare_file(_binary_name(ctx, ctx.label.name))
         args.add(output, format = "-of=%s")
     elif target_type == TARGET_TYPE.LIBRARY:
         args.add("-lib")
-        if ctx.attr.source_only:
-            args.add("-c")
-        else:
-            output = ctx.actions.declare_file(_static_library_name(ctx, ctx.label.name))
-            args.add(output, format = "-of=%s")
+        output = ctx.actions.declare_file(_static_library_name(ctx, ctx.label.name))
+        args.add(output, format = "-of=%s")
     else:
         fail("Unsupported target type: %s" % target_type)
 
@@ -123,9 +132,10 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
             ctx.files.srcs + ctx.files.string_srcs,
             transitive = [toolchain.d_compiler[DefaultInfo].default_runfiles.files] +
                          [d.imports for d in d_deps] +
-                         [d.libraries for d in d_deps],
+                         [d.libraries for d in d_deps] +
+                         [c_libraries],
         ),
-        outputs = [output] if output else [],
+        outputs = [output],
         executable = toolchain.d_compiler[DefaultInfo].files_to_run,
         arguments = [args],
         env = ctx.var,
@@ -146,8 +156,9 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
                     transitive = [d.imports for d in d_deps],
                 ),
                 libraries = depset(
-                    [output] if target_type == TARGET_TYPE.LIBRARY and output else [],
-                    transitive = [d.libraries for d in d_deps],
+                    [] if ctx.attr.source_only else [output],
+                    transitive = [d.libraries for d in d_deps] +
+                                 [c_libraries],
                 ),
                 string_import_paths = depset(
                     [ctx.label.package] if ctx.files.string_srcs else [],

@@ -1,4 +1,4 @@
-import simple_c_library.simple_library_wrapper;
+import simple_library_wrapper;
 
 int main()
 {
