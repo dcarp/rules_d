@@ -92,7 +92,7 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
         for linker_input in dep.linking_context.linker_inputs.to_list()
     ]
     c_libraries = depset([
-        lib.pic_static_library
+        lib.pic_static_library if lib.pic_static_library else lib.static_library
         for li in c_linker_inputs
         for lib in li.libraries
     ])
