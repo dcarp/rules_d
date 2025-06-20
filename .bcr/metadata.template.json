@@ -1,7 +1,13 @@
 {
   "homepage": "https://github.com/bazel-contrib/rules_d",
-  "maintainers": [],
-  "repository": ["github:bazel-contrib/rules_d"],
+  "maintainers": [
+    {
+      "name": "Dragos Carp",
+      "email": "dragoscarp@gmail.com",
+      "github": "dcarp"
+    }
+  ],
+  "repository": ["github:bazelbuild/rules_d", "github:bazel-contrib/rules_d"],
   "versions": [],
   "yanked_versions": {}
 }
