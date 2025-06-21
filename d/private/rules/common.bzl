@@ -157,6 +157,7 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
                 ),
                 libraries = depset(
                     [] if ctx.attr.source_only else [output],
+                    order = "topological",
                     transitive = [d.libraries for d in d_deps] +
                                  [c_libraries],
                 ),
