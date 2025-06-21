@@ -20,6 +20,7 @@ ARCHIVE_TYPES = [".tar.xz", ".zip"]  # in order of the preference
 OSES = ["linux", "osx", "windows"]
 CPUS = ["aarch64", "amd64", "arm64", "x86_64"]
 DMD_REPO_URL = "https://downloads.dlang.org/releases/"
+DMD_CHANGELOG_URL = "https://dlang.org/changelog/index.html"
 LOOKBACK_YEARS = 5
 
 
@@ -106,15 +107,15 @@ def get_dmd_compiler_release_info(url: str) -> Optional[CompilerReleaseInfo]:
     )
 
 
-def get_dmd_releases() -> list[CompilerReleaseInfo]:
-    print("Getting DMD compiler releases...")
+def get_dmd_releases_from_releases_url() -> list[CompilerReleaseInfo]:
+    # This doesn't work for the moment as the official DMD releases page does not contain all releases.
     response = requests.get(DMD_REPO_URL)
     response.raise_for_status()
-    current_year = datetime.now().year
+    cuttoff_year = datetime.now().year - LOOKBACK_YEARS
     years = [
         r
         for r in re.findall(r"<li><a href=\".*\">(\d*)</a></li>", response.text)
-        if current_year - LOOKBACK_YEARS <= int(r) <= current_year
+        if cuttoff_year <= int(r)
     ]
     compiler_releases = []
     for year in years:
@@ -126,6 +127,41 @@ def get_dmd_releases() -> list[CompilerReleaseInfo]:
             for info in (get_dmd_compiler_release_info(url) for url in urls)
             if info
         )
+    return remove_duplicates(compiler_releases)
+
+
+def get_dmd_releases_from_changelog() -> list[CompilerReleaseInfo]:
+    response = requests.get(DMD_CHANGELOG_URL)
+    response.raise_for_status()
+    compiler_versions = []
+    cutoff_year = datetime.now().year - LOOKBACK_YEARS
+    compiler_versions = set(
+        match.group(1)
+        for match in re.finditer(
+            r"<li><a id=\"(.*)\" href=.*[(](\w{3} \d{1,2}, \d{4})[)]</span></li>",
+            response.text,
+        )
+        if cutoff_year <= int(match.group(2)[-4:])
+    )
+    compiler_releases = []
+    for version in compiler_versions:
+        response = requests.get(DMD_REPO_URL + "2.x/" + version)
+        if response.status_code == 404:
+            print(f"DMD version {version} not found, skipping...")
+            continue
+        response.raise_for_status()
+        urls = re.findall(r"<li><a href=\"(.*)\">.*</a></li>", response.text)
+        compiler_releases.extend(
+            info
+            for info in (get_dmd_compiler_release_info(url) for url in urls)
+            if info
+        )
+    return remove_duplicates(compiler_releases)
+
+
+def get_dmd_releases() -> list[CompilerReleaseInfo]:
+    print("Getting DMD compiler releases...")
+    compiler_releases = get_dmd_releases_from_changelog()
     return remove_duplicates(compiler_releases)
 
 
