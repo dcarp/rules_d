@@ -1,5 +1,5 @@
 # This is a fork of https://github.com/bazel-contrib/.github/blob/v7.2.2/.github/workflows/bazel.yaml
-# and modified to run on Intel macOS (macos-13 github runner)
+# and modified to run on Intel macOS (macos-13 github runner) and import ci.bazelrc
 
 # Reusable workflow that can be referenced by repositories in their .github/workflows/ci.yaml.
 # See example usage in https://github.com/bazel-contrib/rules-template/blob/main/.github/workflows/ci.yaml
@@ -121,6 +121,7 @@ jobs:
             common --announce_rc
             common --color=yes
             common --enable_bzlmod=${{ matrix.bzlmodEnabled }}
+            try-import ${{ github.workspace }}/.github/workflows/ci.bazelrc
 
       - name: Configure bazelrc --enable_workspace (bazelversion >= 7.1.0)
         working-directory: ${{ matrix.folder }}
