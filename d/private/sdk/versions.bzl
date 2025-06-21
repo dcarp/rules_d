@@ -7,674 +7,688 @@ python3 d/private/sdk/versions_generator/generate_versions_bzl.py -c ~/.cache/d_
 SDK_VERSIONS = {
     "dmd-2.090.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.090.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.090.0/dmd.2.090.0.linux.tar.xz",
             "integrity": "sha384-a7UrzJMvzKFDtnUptBx0bndG0Dc4F1vtB8UZ2r243R5jRo1uDJqXTQ2DNFep778A",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.090.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.090.0/dmd.2.090.0.osx.tar.xz",
             "integrity": "sha384-XzKPwyC38HX+2n85RF7LS3k9rG6HwY4DYU3cVCb9HibMGWNGJfWl0dVly0FUzTqk",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.090.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.090.0/dmd.2.090.0.windows.zip",
             "integrity": "sha384-daVRwWHs7BEfBYPzKIDc0Uza0KEuwBuVJWKH2OYXbzWy4Gshn7A187+0Gh7NceqN",
         },
     },
     "dmd-2.090.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.090.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.090.1/dmd.2.090.1.linux.tar.xz",
             "integrity": "sha384-0oyzhGOOiggMoNq5TxN/HvmQ2nxlBYAWDKDfTGsXhpJV5Ws46J1PnnIamNm7tVCh",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.090.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.090.1/dmd.2.090.1.osx.tar.xz",
             "integrity": "sha384-/bmq3judIVriThCjXUQIt3umB5oc1IwzS6pue5gH+3+t+1J9HJCQxGJ2ygtvKlnZ",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.090.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.090.1/dmd.2.090.1.windows.zip",
             "integrity": "sha384-kj1l0zYjz0WH4uyjbEIRnscgu7nHgr2lpQtJzxIdyzwq07DQFyObm1u6uwVMGc/N",
         },
     },
     "dmd-2.091.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.091.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.091.0/dmd.2.091.0.linux.tar.xz",
             "integrity": "sha384-bVfAi2jh2fx6MGwVylmOuy/vDgvpdwsu+m6ithkxyl2dU27egfLmLXWg4z2ZauOv",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.091.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.091.0/dmd.2.091.0.osx.tar.xz",
             "integrity": "sha384-l2OD8TGFaKmab9g/gSKI3fZaCLo+iONUlbABH1Fub+lKLhAulP44j3dQ4e7ajg/1",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.091.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.091.0/dmd.2.091.0.windows.zip",
             "integrity": "sha384-tEPenWGBuImaNU2c4UIud0bwvWIjweSIxBZcwe3YU7ZRdSMHhhPJXe8U0RreH6L6",
         },
     },
     "dmd-2.091.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.091.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.091.1/dmd.2.091.1.linux.tar.xz",
             "integrity": "sha384-2D6M2XSfoaOvzUpcxezTwAiQYwtL9zu+4ew+6d/Tu45URveGR/30eN+BAQssbLWI",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.091.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.091.1/dmd.2.091.1.osx.tar.xz",
             "integrity": "sha384-imhHIuIIYP1GztY8ZW4nVXX4E7urHOmCEfZ7Mz0UiQoBTspLw6HNjyiqujI0NxnG",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.091.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.091.1/dmd.2.091.1.windows.zip",
             "integrity": "sha384-8GaazV0GUBwRY1WsVV83m+BlYD7czvxIZEzi4Rre61o99tNC+840+P87CwTJtvzZ",
         },
     },
     "dmd-2.092.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.092.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.092.0/dmd.2.092.0.linux.tar.xz",
             "integrity": "sha384-JxZmJzPaGQZaalbGeTvCzFBd5xlIXUrWGc9d9iBYbnUOs78A8aXvSzQ0SBmIGmkb",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.092.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.092.0/dmd.2.092.0.osx.tar.xz",
             "integrity": "sha384-+8v9zyCz6WvWSyDS47r3PGO7kc9K+/EAqChC9eAGFdeBr/NrsL6J6/7TG/aKMxlZ",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.092.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.092.0/dmd.2.092.0.windows.zip",
             "integrity": "sha384-bxGukKVQ013NBQ9RYNT4jm6BA1EI0x4bDk0/Qp0UavxZmmY9cWKoFIfpnMPRp6q0",
         },
     },
     "dmd-2.092.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.092.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.092.1/dmd.2.092.1.linux.tar.xz",
             "integrity": "sha384-Gnb9/WwYltjgEUmbt4kJXWtTwy7VelH+gK21Zt7pdBODlU/hEQEaEGtqZliDshrf",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.092.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.092.1/dmd.2.092.1.osx.tar.xz",
             "integrity": "sha384-YK0wa3Z8dbbL1+YJV5Rj9zuCgfLaWo4A/L0jMtTV4rQooR6Dtw4WYTLwLZGGir1G",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.092.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.092.1/dmd.2.092.1.windows.zip",
             "integrity": "sha384-z6fmfQ1L11j8PcV1G/lEUY2jvM3GAWWhEqVigtTmQt09FUHYHiDLg3VMUY45/r89",
         },
     },
     "dmd-2.093.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.093.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.093.0/dmd.2.093.0.linux.tar.xz",
             "integrity": "sha384-+xaucMDaJC+hdPGKh0TCXO+o10IHSlI2uHdHH8cXCAMF6dHqZfWvVb5Z91H32x7I",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.093.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.093.0/dmd.2.093.0.osx.tar.xz",
             "integrity": "sha384-Rvv73pOe1AIAelqIkYZemy3beRKLQ/IqCRcMtEuPDuFqelkiuHoE+CJPBqF88nRo",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.093.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.093.0/dmd.2.093.0.windows.zip",
             "integrity": "sha384-8Br6vx4vwZd7GvtfbrAfjCde1tA6quIVQAhoS8gy3LmlUf7ABDaO5mbTS75lBL6J",
         },
     },
     "dmd-2.093.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.093.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.093.1/dmd.2.093.1.linux.tar.xz",
             "integrity": "sha384-2nseARDyt9JM0adC6nc4krm4KTycIKVIozozfMcpoAH4dqv3sqp2SxyGHh8MQlPx",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.093.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.093.1/dmd.2.093.1.osx.tar.xz",
             "integrity": "sha384-tb+DrKmBdtNDXcUIGgNWE/ewyJ2Q6FNQ5VYTD19c3VDjB8ApgpTftV1ei6kzcXGz",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.093.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.093.1/dmd.2.093.1.windows.zip",
             "integrity": "sha384-Q3xYNby2EEV+BGkTZYXMlDVTY+6RLNrLDEeDUCfwt/CwUHrx9Rvmaj8KNSumVe46",
         },
     },
     "dmd-2.094.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.094.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.094.0/dmd.2.094.0.linux.tar.xz",
             "integrity": "sha384-tVOHJI4uYuytKDQRTtBLmsUjDa56fDwRXsxi00Z+zCYQ/0XA8W5S1VLGefVw83X6",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.094.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.094.0/dmd.2.094.0.osx.tar.xz",
             "integrity": "sha384-9WtDYhrc8D89rx7hYaXCzSv7zZK5QQM05FF6SZPswoZM+7Itx1i6gyKtlCxdRBAR",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.094.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.094.0/dmd.2.094.0.windows.zip",
             "integrity": "sha384-e5mbHxcFb92gkuNbWhMrv1zfzg9nAuurH2Ik0e7AUDZ8+HXeglWcL9NaCmPiv4eO",
         },
     },
     "dmd-2.094.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.094.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.094.1/dmd.2.094.1.linux.tar.xz",
             "integrity": "sha384-8HXLVlMWns18h8jXLfi58J74B8Wd3iY2Dr8BHUz8un8MqL8wig9cSbdGB8r8mS2i",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.094.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.094.1/dmd.2.094.1.osx.tar.xz",
             "integrity": "sha384-TuCzNUf8fO7LPKOtmSI3ED6UALnBixTOJCEMDyj4JnL/0AVvSiaQqeol6iPl7BIr",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.094.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.094.1/dmd.2.094.1.windows.zip",
             "integrity": "sha384-jn+xfMpmOQRKzuDeMrWZA8gLRCRD5jzgbwiQtGKJhepjjBIlfH1YhYprC9Juu8au",
         },
     },
     "dmd-2.094.2": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.094.2.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.094.2/dmd.2.094.2.linux.tar.xz",
             "integrity": "sha384-RVoqRJaSK+XPUmx+BwE1AaFfRix17+vum30IJPXDbsEIFjKK8G0jpN1eQU5qnM4t",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.094.2.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.094.2/dmd.2.094.2.osx.tar.xz",
             "integrity": "sha384-taqhRXggazSCA8v6bIiDER5/MfiE7yL1wTj4v2DwUJd1ipRyNpk+WW5veTJqgJ8W",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2020/dmd.2.094.2.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.094.2/dmd.2.094.2.windows.zip",
             "integrity": "sha384-PtIiloB/nqW3+27/aOp3/JF/JVVwA4ZawkACuNcgDT+D5qLE0PmLYhWaEHmRE2YL",
         },
     },
     "dmd-2.095.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.095.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.095.0/dmd.2.095.0.linux.tar.xz",
             "integrity": "sha384-7M7D7lU74PlIdaEftYhyT+U0UuXI3PWxiHMxxu+lOXj+GN8mXJGw4Xp/h7hgiZHB",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.095.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.095.0/dmd.2.095.0.osx.tar.xz",
             "integrity": "sha384-NFdldUrTTX8zkNzMgFUwB3NNptgapQhxfRHuB47CkBAyKCfZRsZdlzmVMgTZpgix",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.095.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.095.0/dmd.2.095.0.windows.zip",
             "integrity": "sha384-8fX2zpwwXXxQ2SFf4MahRvWQXn6D2irKFhhTYEPFpSj9O6OKMoaWe6VlGo+vs0xl",
         },
     },
     "dmd-2.095.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.095.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.095.1/dmd.2.095.1.linux.tar.xz",
             "integrity": "sha384-TvQdBWSUHh8x7jud6DzTBD0QNWQwMWM0DzzkEIQcALo2epVrfJT8X/uMrCUUoGjf",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.095.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.095.1/dmd.2.095.1.osx.tar.xz",
             "integrity": "sha384-1957Y1l/PuPVQsqCrg6zgwcqLJVmjIf0SZN+gJXe0rfSaTZDI4L+swZOI/x0SPwc",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.095.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.095.1/dmd.2.095.1.windows.zip",
             "integrity": "sha384-xMFj+h3M7R4NNs9rslIZ0I99/oSFMPyZ5cNbJVkBDYnRJcmEDdVaemVJ4S9Jj56m",
         },
     },
     "dmd-2.096.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.096.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.096.0/dmd.2.096.0.linux.tar.xz",
             "integrity": "sha384-qkEpLSDS94dUxfJOr1TZfe/8TSvI74DEacE3Pdsnpv+8qiYozmsO0FAcCc5aRBdi",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.096.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.096.0/dmd.2.096.0.osx.tar.xz",
             "integrity": "sha384-VaPSL+8CnbNxfSBa9C0EYRa3tGbPXQXMDzQBwaAQ7r0PFcQzS8gix6Rdkqvrgb6Q",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.096.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.096.0/dmd.2.096.0.windows.zip",
             "integrity": "sha384-Yzk8S6mIdqztidSFLSRDXhhxKlEQ8q9H0KLvD0yfrfZO47xYJ8dt1QocXphcO9d9",
         },
     },
     "dmd-2.096.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.096.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.096.1/dmd.2.096.1.linux.tar.xz",
             "integrity": "sha384-Sfo3yEFy5Y4Oq9LSmFkZvldpKHZfzj3kz90jKcA7flqOEOmyV8tfUgEMMciYlo7N",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.096.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.096.1/dmd.2.096.1.osx.tar.xz",
             "integrity": "sha384-DIlc2jVvjHqEdK2BGUkpQSBeK6ZSw42g+ZrC+ZOK/zujt0heyVY/bK0/HYc6teHR",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.096.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.096.1/dmd.2.096.1.windows.zip",
             "integrity": "sha384-vu2kUK3HfeLR/4octytAmkdzI6MYYCdV4ulcW0hyWjJlabIEyQ81s8UAvfsuyE6B",
         },
     },
     "dmd-2.097.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.097.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.097.0/dmd.2.097.0.linux.tar.xz",
             "integrity": "sha384-py1Z7rsWI6OItY7+pxVYnD7YZJQ/h0WY889f/zS+gfTPGuSJOqID9E9e1vOseoyf",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.097.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.097.0/dmd.2.097.0.osx.tar.xz",
             "integrity": "sha384-hcA1x65EmnH4M45ItuA+jPNkCKMx3I1VoY3chofU/qkC86yshOmB9g+jmygqQNn5",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.097.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.097.0/dmd.2.097.0.windows.zip",
             "integrity": "sha384-85vZmoWQHKtcvpKwejJYaOxD7yGj+IjgIs/2BCCFKBbWrS/0uzQE7+/viCYkwL29",
         },
     },
     "dmd-2.097.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.097.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.097.1/dmd.2.097.1.linux.tar.xz",
             "integrity": "sha384-84RpavlLrCYZSD7h/tBufki89y6RyTqnlgUfpz0OieSKUpq/24z+8+pA98Dimeow",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.097.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.097.1/dmd.2.097.1.osx.tar.xz",
             "integrity": "sha384-JTiLd/PXb5YNaYfLiuWo9idQlDubCC8SMtcR/B4IEULdsoyGBaGzdkNX+6/wY6Te",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.097.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.097.1/dmd.2.097.1.windows.zip",
             "integrity": "sha384-HFj5J/ht9BH5wkZuomnSm9hbTBXz6aMbKIaUkxmqbwGXQ0cBA1ZrOJw2CP/OQV6h",
         },
     },
     "dmd-2.097.2": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.097.2.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.097.2/dmd.2.097.2.linux.tar.xz",
             "integrity": "sha384-cCGw/sqxJzoHYzQROFUJweaeygzJimUy/BdAL4OT0mB0W4AfGfCBZQcoFw+SD1eO",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.097.2.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.097.2/dmd.2.097.2.osx.tar.xz",
             "integrity": "sha384-NecY35jtUVOVhQn+8LT0ZPzxKUHPvgaoIMVnpJIWk6Jbggplcjo0/LSdSwIiy85o",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.097.2.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.097.2/dmd.2.097.2.windows.zip",
             "integrity": "sha384-LWnJkoYnSXEY1AHQk3iOJy5JD5kWaP3jsYrc415zqCp0ispkACKVGe4GP6DjefBH",
         },
     },
     "dmd-2.098.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.098.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.098.0/dmd.2.098.0.linux.tar.xz",
             "integrity": "sha384-kE3gZ41+RyIo3Wd7xK7K3X2fMjv/hxBpeSmAonTEPzRq6GqEAENRReCtEsBK7Fg9",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.098.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.098.0/dmd.2.098.0.osx.tar.xz",
             "integrity": "sha384-K5DlzaJ8aBNVrh28gXbbvTJOVZUhbmRIkUt6PPlaDQjC49iJb4xCb880hwn3ZoeN",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.098.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.098.0/dmd.2.098.0.windows.zip",
             "integrity": "sha384-43W/1okHnCWiPJiPXHuqOH7Aa3w4yTjfiPdYqvwQVhz1i24TLQGsS7KTHGQveV1b",
         },
     },
     "dmd-2.098.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.098.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.098.1/dmd.2.098.1.linux.tar.xz",
             "integrity": "sha384-wPPj3dyaRs0t/C6nlpqY6nFCxznwTwfRo2/qz5JLulPgGoWhFdii1L6WqEi0e5SB",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.098.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.098.1/dmd.2.098.1.osx.tar.xz",
             "integrity": "sha384-XDPbi93u9mQInV2S05wJ1GTDNWhCBedorYpSVRf0ab+F5uvArLHIC9t1JPz+luKU",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2021/dmd.2.098.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.098.1/dmd.2.098.1.windows.zip",
             "integrity": "sha384-20XUwke42vI9WyBzMHGZP3ySd3cDO+thYYZgu+ghxg6rRm0x+Da/D6OeDev3rIQL",
         },
     },
     "dmd-2.099.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.099.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.099.0/dmd.2.099.0.linux.tar.xz",
             "integrity": "sha384-JfobDuwH9GzDrrTTYudsGfAfsmhLiNBzJb/mQOMGMhNhHi+m4UnXgaBb9IsN5n/y",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.099.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.099.0/dmd.2.099.0.osx.tar.xz",
             "integrity": "sha384-cdL6rvIXKz/m8nODE/M7DfVphNywreBWu1jTps5CjTsW86Ezf0TCHyWld1HqFq/1",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.099.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.099.0/dmd.2.099.0.windows.zip",
             "integrity": "sha384-5x0SCIDsK4NRRWRroR95UifJI8N9d1Xai8FDjwrhcGa8QzyoQ8BVPRZ8k7Giy2TW",
         },
     },
     "dmd-2.099.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.099.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.099.1/dmd.2.099.1.linux.tar.xz",
             "integrity": "sha384-8EbSTJOuipYE6pnQvjiYE/31toMr8+359JBj+eJhhiQDy/aradpeYgapOvoZJSMf",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.099.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.099.1/dmd.2.099.1.osx.tar.xz",
             "integrity": "sha384-H3kmlQ3anAQjdfGBrHfKhQyGyhyOMKz1w3g7kkUgR8FYycYsH+rmWPslfgCFs9Bx",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.099.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.099.1/dmd.2.099.1.windows.zip",
             "integrity": "sha384-c/g9Yzuqe6mFkYlUguk+aB0dSrNipwxLE1iGbTuY2Evt8ZSE1bCPUZmMG4QMyt/j",
         },
     },
     "dmd-2.100.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.100.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.100.0/dmd.2.100.0.linux.tar.xz",
             "integrity": "sha384-M6pOB4gyVI9kcwHs1fZ9/Sv+0m72WqkDNzPR9+fpWgEGHZsSGP3nUgasuuwUynxX",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.100.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.100.0/dmd.2.100.0.osx.tar.xz",
             "integrity": "sha384-8oCQueOW2mkVg9JDMgX/rhBzb7xJc1kHLOHlKlxX9oqqDC+jz7rb9H8PtIv2OePi",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.100.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.100.0/dmd.2.100.0.windows.zip",
             "integrity": "sha384-49eZh/8jJNdEOKo2G3kNa8rdpkwZaY7XXouy2+eYR6aKMb9T/ywkJgxL2ClxDDbf",
         },
     },
     "dmd-2.100.2": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.100.2.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.100.2/dmd.2.100.2.linux.tar.xz",
             "integrity": "sha384-w69orvCOZ0uGOeiZs+NzkBMbUVc4JmkbVhYaYIBPQ1ab9Z9LITTSlORf9UNUDzhM",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.100.2.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.100.2/dmd.2.100.2.osx.tar.xz",
             "integrity": "sha384-LOm86kwGAAbYpO7uYbWQIvFB9NDMCfIW3j05hDa+MWl7qCfB1MzNaHiLheLJW8+e",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.100.2.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.100.2/dmd.2.100.2.windows.zip",
             "integrity": "sha384-i0wnGJ6c0JXs6Qqc16Op4IJLy5UzBgWsfB1SiBN5AzR9KRxFPs+OfJ6WGBriy6Zg",
         },
     },
     "dmd-2.101.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.101.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.101.0/dmd.2.101.0.linux.tar.xz",
             "integrity": "sha384-x/3MZk+iTcOPW5PG4UqEkYj3W94mMRzM4LNicIEUIIALvtbDaDVz71wuHm9zC3/h",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.101.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.101.0/dmd.2.101.0.osx.tar.xz",
             "integrity": "sha384-KitOi7mImTdGhCrhhe7QSTG0sFlC+C3iLa4w2cbbTON+ZWTJYQV6XoebQpVn5hh4",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.101.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.101.0/dmd.2.101.0.windows.zip",
             "integrity": "sha384-XJKAD2GjInlRQP2G2oYkkIpJi881Jio+LpQSC5tZatdS3ynCa9oBwIE8oLaOfSRk",
         },
     },
     "dmd-2.101.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.101.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.101.1/dmd.2.101.1.linux.tar.xz",
             "integrity": "sha384-4p4orrmndfcqUxToJ6um9yYwuUqZ6O/pXGBrkm2zSJWgHdLwg3h2jdclVqZdaTv2",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.101.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.101.1/dmd.2.101.1.osx.tar.xz",
             "integrity": "sha384-FjGR6M/RjNM9AEqLr8oQDsq+zHbNicQM2X4Cip2xA2u6iWzXXbL8WMXtd7OGpBUB",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2022/dmd.2.101.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.101.1/dmd.2.101.1.windows.zip",
             "integrity": "sha384-Z4cO1nn6P7+UZgSskN4YeSrLjpY7nUXBZA4sBCj1Ar6aIxNSjLEx4a4Sl9j3+VPD",
         },
     },
     "dmd-2.101.2": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.101.2.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.101.2/dmd.2.101.2.linux.tar.xz",
             "integrity": "sha384-ZwUBlm4lVLSsAtW0dZ1t7xhtli/h2RQl7hdfvJbVymO/cccl0KWDNcCcCN6q+YUC",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.101.2.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.101.2/dmd.2.101.2.osx.tar.xz",
             "integrity": "sha384-gX/BrvAl3Op0W6f97DlPbLz5X94IwnhabPOEq1L9OxB13DwuZE3p68XTPHEBXnjJ",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.101.2.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.101.2/dmd.2.101.2.windows.zip",
             "integrity": "sha384-ZAVCJ3BAy106Royj3ak/IeCty3GA4n97PH4ereSBiB/ql6myM72qrjFTJzKbGTex",
         },
     },
     "dmd-2.102.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.102.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.102.0/dmd.2.102.0.linux.tar.xz",
             "integrity": "sha384-2hZTA1W4KPgPYUYcJ+9+Yic3Az2TGZz728iu7DYubcpSkVAVvUXUWIZaMIvTz3SZ",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.102.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.102.0/dmd.2.102.0.osx.tar.xz",
             "integrity": "sha384-Q+UijASUPrn8k+yEq4qsHeCvEWhN4839U6pCnkCKCLxPWtEOwpJWl+v0HsisK37t",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.102.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.102.0/dmd.2.102.0.windows.zip",
             "integrity": "sha384-L3nOLnOgp8ynSy5QbCe+jUQvODrZSV7HZb9U+O0qCJ0rn6/darI60s7u8LMGFody",
         },
     },
     "dmd-2.102.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.102.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.102.1/dmd.2.102.1.linux.tar.xz",
             "integrity": "sha384-qfDNu/XFJ8JGEULacCkTL5NwUVV6gNij7MnItTznO/3TwlZdsMZdxLklt96QZhhp",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.102.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.102.1/dmd.2.102.1.osx.tar.xz",
             "integrity": "sha384-ga+4h+bQa4HPXk3DzePFCluyfh2KGWm1iqlwN/n8Zj9X/44BxTrz6M7bCWbbknUX",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.102.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.102.1/dmd.2.102.1.windows.zip",
             "integrity": "sha384-41EmF8fGpFFk8jX1zaBPYNYfvxfZaA2WgPovJv+DdSLTbiU4CnOcdXfv0XlTe03w",
         },
     },
     "dmd-2.102.2": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.102.2.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.102.2/dmd.2.102.2.linux.tar.xz",
             "integrity": "sha384-8QrWBp/a58z53GyBtqOGd0M8ChKgbV4lSnl+4W6Hxfx6AUcBBcURGq5ZuZr/yZ+g",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.102.2.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.102.2/dmd.2.102.2.osx.tar.xz",
             "integrity": "sha384-YCd8FHA9gJfaPMMOkU0yT+P6kzDbfRhYlnekYab0B+z2x0VsaUlLMyvOEcM4Z61o",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.102.2.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.102.2/dmd.2.102.2.windows.zip",
             "integrity": "sha384-8fD+WUwMf0iyM+gaF+kVpnb3qOWawnKEsED+8NDbWLk6jNyveDcQEcRTeZYyZu4p",
         },
     },
     "dmd-2.103.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.103.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.103.0/dmd.2.103.0.linux.tar.xz",
             "integrity": "sha384-KEQu+8X+kr5ssmvPdGaBGK+izj4/5B5NqgGTeKsR02pc0EER2BKQDutlVcBF/EOt",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.103.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.103.0/dmd.2.103.0.osx.tar.xz",
             "integrity": "sha384-4a0B4Lm96Ju43h6BC1ru3AUisom6zLZbhb4hqqMHQ3uu9Q6y6xVbMQnPBiRnjFY5",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.103.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.103.0/dmd.2.103.0.windows.zip",
             "integrity": "sha384-OABjtTGwy8OWR3bc4jiXSAoIHJnY8o5FYpjMjXQAjzJI0iw2269CVQn7B0Ng6OLU",
         },
     },
     "dmd-2.103.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.103.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.103.1/dmd.2.103.1.linux.tar.xz",
             "integrity": "sha384-UGmy2Ov2t3IjkUM0c2Whsf2ehBAPIamo29W0kyO9lfy9EzAKePVTgXiB9OKXXokX",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.103.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.103.1/dmd.2.103.1.osx.tar.xz",
             "integrity": "sha384-D+qkb7o5Pqr8Q8kmZvz9QNi7GLrIZgfzDH4IS+w/3dH6fzee8kGJQ3V1Sy+jAZbD",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.103.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.103.1/dmd.2.103.1.windows.zip",
             "integrity": "sha384-Emill8OFj8qz6TKn78i2mBiNwpZuc2kx93A7LV9sXKjaSZnVEWIPhyhzi6IFZfHU",
         },
     },
     "dmd-2.104.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.104.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.104.0/dmd.2.104.0.linux.tar.xz",
             "integrity": "sha384-9NXKQtv9VZSy3ddBCTMiLi2ZGdbcCnGDqdTQ7u5UY63Ea91Om7j47eFILj7O9qSl",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.104.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.104.0/dmd.2.104.0.osx.tar.xz",
             "integrity": "sha384-hKee9KEcGMOwY42ZVh+4oo5HJMKeeKBgTkS0sIxr4gai+caJTxmlH1lAjWafdk8V",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.104.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.104.0/dmd.2.104.0.windows.zip",
             "integrity": "sha384-pQqMkIzlBTXhfmOgMYGUnaAHLDzTD1nYR2xdFrh9JMBItGQr+FBWt6Hr41algb6r",
         },
     },
     "dmd-2.104.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.104.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.104.1/dmd.2.104.1.linux.tar.xz",
             "integrity": "sha384-1OQyblNMH6ATp/WQ5G00y2VSb2ndxhqKNsGAiJqruvxqfEwtf9MAv63PoXPPs90H",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.104.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.104.1/dmd.2.104.1.osx.tar.xz",
             "integrity": "sha384-bneUXYXzIsKc2trS1NJrHr85F7OlMNUub6YJyRDYYkAWutojdmNDNbqgJsiw5Xg4",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.104.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.104.1/dmd.2.104.1.windows.zip",
             "integrity": "sha384-nSAN2zZwkU8Z0JqM891x/danGegMH/CMuy7CIjLB0EyVo6MIjEsKTGzNVsdl+8cR",
         },
     },
     "dmd-2.104.2": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.104.2.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.104.2/dmd.2.104.2.linux.tar.xz",
             "integrity": "sha384-IWdai4arS900Jna/aheM/D1L8bwAFSkOfa1bZyMz4IXNGcx9vuO9N0ZQ/LVmIkvL",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.104.2.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.104.2/dmd.2.104.2.osx.tar.xz",
             "integrity": "sha384-pGdw4OlLaFQmi4yOXt9czBR4p5N+YwbYYUSnfN2DYJmtKhsnK+lOZj+G+oQM2PUD",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.104.2.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.104.2/dmd.2.104.2.windows.zip",
             "integrity": "sha384-Up8tiaQHQD82uUeGfAIdE8D62X0+PS8g7T9HwJ7PYP1SxSNaEEziQd2KHNokedKy",
         },
     },
     "dmd-2.105.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.105.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.105.0/dmd.2.105.0.linux.tar.xz",
             "integrity": "sha384-4Utskg4Jhemhr+XfA5NiyvXEl14q6ak4XIEpxAmAiFWbWU/kFRr0KNiPL53+o3Si",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.105.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.105.0/dmd.2.105.0.osx.tar.xz",
             "integrity": "sha384-f4b79y0QL2VPyaRG9s9Bk3H7LxTt/7YC4nfj6S0pLksXvCejCfB1ZrBvml/SkH15",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.105.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.105.0/dmd.2.105.0.windows.zip",
             "integrity": "sha384-F9AeV6aG19oRyBBiA0gGW7TB8J3Jn2jXTgZcN5hJX3oDb5fzDEbffpbA7Q9M3wKG",
         },
     },
     "dmd-2.105.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.105.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.105.1/dmd.2.105.1.linux.tar.xz",
             "integrity": "sha384-lBY32G36D2X/2PiCORKeo8kGQJitwaqMI10tTbvClMDaPfWT8jGSwqAIeev2Yvc8",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.105.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.105.1/dmd.2.105.1.osx.tar.xz",
             "integrity": "sha384-vp72n/8YEuwpgEPjQqK9iwtBts3xUHj0UCLSJUNRLGZUIx5BSmzkkkIfIPeTbZ4g",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.105.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.105.1/dmd.2.105.1.windows.zip",
             "integrity": "sha384-YvECbboXxSESyt6KAHNz9DZoqto2MXjE+nnPfYqx5vu/eWT00jP+4E78g80StqZp",
         },
     },
     "dmd-2.105.2": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.105.2.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.105.2/dmd.2.105.2.linux.tar.xz",
             "integrity": "sha384-23rS814pVPjt6k/KKke2/GTUW3Ctmwj+6Z0vhrY2oZYlXoAVTy4Ev50FMxfhCAet",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.105.2.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.105.2/dmd.2.105.2.osx.tar.xz",
             "integrity": "sha384-uKhFRRqN0TXwMNz+MrzsCoCpaTZ9TOKrbtk2/jpn7HQJPNdzl03Wowe0nJ/BuWgv",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.105.2.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.105.2/dmd.2.105.2.windows.zip",
             "integrity": "sha384-d3NXrWLsejatfNdsKahKpNzAiyG8Bnxbe7tdxfCcM9vJnmwbPG5endJJyGDXYGez",
         },
     },
     "dmd-2.105.3": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.105.3.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.105.3/dmd.2.105.3.linux.tar.xz",
             "integrity": "sha384-3RCjrU01jynS3XjwqgbtK+tWjIPX4rAzNYpC4AvDjd5/jWj1HuhtvYoeITfA2QT4",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.105.3.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.105.3/dmd.2.105.3.osx.tar.xz",
             "integrity": "sha384-F2q/Ui84zVcyunoMmyYZ3UEigtYxNzMjkz+R8XFjilqtkepF5y1qoyUqNWDeSKFj",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.105.3.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.105.3/dmd.2.105.3.windows.zip",
             "integrity": "sha384-DMJ1FLNLoer6AGe4tebFoqbTeKj3+Add8kMWlFBLKk5A/6UkEVlcHos64IKxhMg1",
         },
     },
     "dmd-2.106.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.106.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.106.0/dmd.2.106.0.linux.tar.xz",
             "integrity": "sha384-9yPssidXprtYCzVOgeQaH9TtWPOmAMxXbTVIgbHFgPo+86VkEooPa49gMJSyK0f8",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.106.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.106.0/dmd.2.106.0.osx.tar.xz",
             "integrity": "sha384-e9V+eKk8D/OV1NQCWW1FNL4ntHTUp/FTesc/tIAimJXKUjFWOYJGAWGGNmGatl0m",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2023/dmd.2.106.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.106.0/dmd.2.106.0.windows.zip",
             "integrity": "sha384-8zar8B+MeBfZthW2nXOhviD4F79SAgic1Sh6itekuoWoakkrhGI3G7cqG//MVTHr",
         },
     },
     "dmd-2.106.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.106.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.106.1/dmd.2.106.1.linux.tar.xz",
             "integrity": "sha384-uf/hzYtAmJAMhm0RTc4YqjXlx2oKFLXCqmt3RHlMF35BaV0qCwJeeKtheCDHV7jS",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.106.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.106.1/dmd.2.106.1.osx.tar.xz",
             "integrity": "sha384-cakZfZG4NAwjyQefMXJW+L3kDvelS1afNX/1PuockTOu/ZSz0YyhdMnNCkwGHGTk",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.106.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.106.1/dmd.2.106.1.windows.zip",
             "integrity": "sha384-KiKnbq61f3eeraLSZO1OPggQ8B5yULCScn9bY0NVak0cMN96tdDP1R/QWlD9mHh2",
         },
     },
     "dmd-2.107.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.107.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.107.0/dmd.2.107.0.linux.tar.xz",
             "integrity": "sha384-d2A3LtbrXMThbN2YUIPYMcSWy07FIKSTUeP5bUAaEkntdXxVNw1BO9QOWpGQXknq",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.107.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.107.0/dmd.2.107.0.osx.tar.xz",
             "integrity": "sha384-hnFtz/CH8V3QuNoqlYePlywbo3lpVlYd8wI4m02gi2biHOPw8aw9mVUSPrYitYtf",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.107.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.107.0/dmd.2.107.0.windows.zip",
             "integrity": "sha384-a5fth5aB4opyjrrbDL+E+EEUZFGzrj66u60ohIgxuHRBLJ39CsCh+oaUR91swIoc",
         },
     },
     "dmd-2.107.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.107.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.107.1/dmd.2.107.1.linux.tar.xz",
             "integrity": "sha384-VcB/iKJsOGSA9ciZ1TL5JcG+QNZJYln4ASLXKDUavUiIyY/vwTxlrq/25TTN/lVU",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.107.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.107.1/dmd.2.107.1.osx.tar.xz",
             "integrity": "sha384-rNlE3fuu6cudDnrhtPsmB8uWwNu6rCIrrZ3Gb0sWHVBq+oSLfY2DotjfXQd9Qh2W",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.107.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.107.1/dmd.2.107.1.windows.zip",
             "integrity": "sha384-CZNCn5YQRoQMO5r0yIk5GcoC3VsjXLJ5QIehbehtbEkw1YDrEUcaTE+tntKWU7Z0",
         },
     },
     "dmd-2.108.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.108.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.108.0/dmd.2.108.0.linux.tar.xz",
             "integrity": "sha384-62kXcOB9492xMrkrndWEr50t7UvDOYU8ZrIUOxsH3B74yPlV4c5HflHWWm67dO+L",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.108.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.108.0/dmd.2.108.0.osx.tar.xz",
             "integrity": "sha384-tkP+Oyzu1vRBwgQm7snkceFybIMTs93blLhCETC/ZTLUt3SduIgkKi2apJS9USAd",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.108.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.108.0/dmd.2.108.0.windows.zip",
             "integrity": "sha384-dWj4y3u8ZepD7ZtOSLHLO4I/p+3G7INm2egUM9FgSRxMVkCwp40ZJNelj1zB236P",
         },
     },
     "dmd-2.108.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.108.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.108.1/dmd.2.108.1.linux.tar.xz",
             "integrity": "sha384-hZfrXDG/Wf4EK7abWf6yE2BbBGnFyxyhk5QS9XlJsmafGpbQd9OnDHoHz4m2nH0I",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.108.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.108.1/dmd.2.108.1.osx.tar.xz",
             "integrity": "sha384-pS+eeVo4H3v1H8zXd62m3ylSr2VJwZ0MGl/yXbNgENqDCIDNU9DRDnXvrpds9lu1",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.108.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.108.1/dmd.2.108.1.windows.zip",
             "integrity": "sha384-zsvgAujg74bIZJtwyk8n2cXv/3zo3fzWRYGK07oMT8Quj58wSyoFDtPqYdNM58OK",
         },
     },
     "dmd-2.109.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.109.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.109.0/dmd.2.109.0.linux.tar.xz",
             "integrity": "sha384-3wDGNIik8HzBwMM+1HVkDT+GXjv6cDv0RpSwLjywYSDx2dZqWsJ6+/U95dlqsDG2",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.109.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.109.0/dmd.2.109.0.osx.tar.xz",
             "integrity": "sha384-SlTlndBah6uwsVLVJUyspkaS9wpd47B9843QsSh9tNs3rXLsu3mFOBMVUZWV54iO",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.109.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.109.0/dmd.2.109.0.windows.zip",
             "integrity": "sha384-senc3nfM63LA4BLrSlRnlJz+712Yb548GbOpwUohB3pEPAl6Y8PhzF90vDLv6s/u",
         },
     },
     "dmd-2.109.1": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.109.1.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.109.1/dmd.2.109.1.linux.tar.xz",
             "integrity": "sha384-2S0+JWoWWpJbqcTDByozUWyaTLtWwukmjpnop1SyC9soFdJT62hX0VIhvb4TZXXl",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.109.1.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.109.1/dmd.2.109.1.osx.tar.xz",
             "integrity": "sha384-sUlJPRHUdR5mYmxKNbXpttjORiALIOfF6aIYrzZCdjCUXx0Hrmt7A+j7Y/CUG86K",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2024/dmd.2.109.1.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.109.1/dmd.2.109.1.windows.zip",
             "integrity": "sha384-Lv4d5pKXIicU3wemxzKii3fYu71GmPGAtpc/nqyzL3s1youopvKd2nBCyptDgnic",
         },
     },
     "dmd-2.110.0": {
         "x86_64-unknown-linux-gnu": {
-            "url": "https://downloads.dlang.org/releases/2025/dmd.2.110.0.linux.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.110.0/dmd.2.110.0.linux.tar.xz",
             "integrity": "sha384-JeBWxaO3admbiphNSM4NodxTzJ1KfTndIDK555Df7QLne8COjo+3YksssAz/kmau",
         },
         "x86_64-apple-darwin": {
-            "url": "https://downloads.dlang.org/releases/2025/dmd.2.110.0.osx.tar.xz",
+            "url": "https://downloads.dlang.org/releases/2.x/2.110.0/dmd.2.110.0.osx.tar.xz",
             "integrity": "sha384-PLnCInMPKLS+Cj0v/LCn5s2IfzTfHOcbZRekiQF4fKJornBPOMNe8z21T2O9DJO2",
         },
         "x86_64-pc-windows-msvc": {
-            "url": "https://downloads.dlang.org/releases/2025/dmd.2.110.0.windows.zip",
+            "url": "https://downloads.dlang.org/releases/2.x/2.110.0/dmd.2.110.0.windows.zip",
             "integrity": "sha384-R3pe/ZIq0LRDrZ8cd6WMAVMcGZHOCzeqRqTX3Dve447bjOxxG4kEg9xxLPXbvXgo",
+        },
+    },
+    "dmd-2.111.0": {
+        "x86_64-unknown-linux-gnu": {
+            "url": "https://downloads.dlang.org/releases/2.x/2.111.0/dmd.2.111.0.linux.tar.xz",
+            "integrity": "sha384-ZJdbkYwmz0iJ9b46HBHUAsoecbthZyIuihWsJ1UQEbgENFJ+6ZAvRCY7i8bG0P/Z",
+        },
+        "x86_64-apple-darwin": {
+            "url": "https://downloads.dlang.org/releases/2.x/2.111.0/dmd.2.111.0.osx.tar.xz",
+            "integrity": "sha384-+vwZ2YSNbkBvqsnioEYMKHKheaVh0w/NFnUuL2izY05En0tmaKpAf57SxeoEicNd",
+        },
+        "x86_64-pc-windows-msvc": {
+            "url": "https://downloads.dlang.org/releases/2.x/2.111.0/dmd.2.111.0.windows.zip",
+            "integrity": "sha384-MyiIaDOaDetXXf62ODHyvCJdnzvxrcirKUF172/ddP+eCM/iBUbOMIlundl0Wqo0",
         },
     },
     "ldc-1.20.0": {
@@ -1147,6 +1161,24 @@ SDK_VERSIONS = {
         "x86_64-apple-darwin": {
             "url": "https://github.com/ldc-developers/ldc/releases/download/v1.40.1/ldc2-1.40.1-osx-x86_64.tar.xz",
             "integrity": "sha384-GlfcIHRVUiT7bXx4ppBInbNUUxKPWNhRY3/L6O/eYZWHatxYc1HsAILAjmGoGoIX",
+        },
+    },
+    "ldc-1.41.0": {
+        "aarch64-unknown-linux-gnu": {
+            "url": "https://github.com/ldc-developers/ldc/releases/download/v1.41.0/ldc2-1.41.0-linux-aarch64.tar.xz",
+            "integrity": "sha384-9vDrjjlEeq/oOdhjM//Jf6qZCrDexyDwmNPTAyYYPI7Ww3tEVpLmTxAsXCWf6e/K",
+        },
+        "x86_64-unknown-linux-gnu": {
+            "url": "https://github.com/ldc-developers/ldc/releases/download/v1.41.0/ldc2-1.41.0-linux-x86_64.tar.xz",
+            "integrity": "sha384-jhptHueKFZuBk+vE7WlhGcaQmTW4RT09UL/8Ionu/zs+LNELENqysxsi2uCnkCUQ",
+        },
+        "aarch64-apple-darwin": {
+            "url": "https://github.com/ldc-developers/ldc/releases/download/v1.41.0/ldc2-1.41.0-osx-arm64.tar.xz",
+            "integrity": "sha384-SMLzly3r6fpTKf8+gvyBuFPZjBakiNecNaTCPwHj88SO6gLURIBc2ZJjKqey8Jb7",
+        },
+        "x86_64-apple-darwin": {
+            "url": "https://github.com/ldc-developers/ldc/releases/download/v1.41.0/ldc2-1.41.0-osx-x86_64.tar.xz",
+            "integrity": "sha384-Fmbq2sAUplXQIceDail9Ylxy21QM1rgAm32tBUl/qXPux+p8NeDg5FRfsANywdhK",
         },
     },
 }
