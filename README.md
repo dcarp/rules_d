@@ -1,4 +1,4 @@
-# Bazel rules for d
+# Bazel Rules for the [D Programming Language](https://dlang.org)
 
 ## Installation
 
