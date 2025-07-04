@@ -41,7 +41,7 @@ def rules_d_dependencies():
 ########
 _DOC = "Fetch external tools needed for d toolchain"
 _ATTRS = {
-    "d_version": attr.string(mandatory = True, values = SDK_VERSIONS.keys()),
+    "d_version": attr.string(mandatory = True, values = ["auto", "dmd", "ldc"] + SDK_VERSIONS.keys()),
     "platform": attr.string(mandatory = True, values = PLATFORMS.keys()),
 }
 
@@ -60,10 +60,25 @@ def _archive_prefix(url):
 def _d_repo_impl(repository_ctx):
     d_version = repository_ctx.attr.d_version
     platform = repository_ctx.attr.platform
+
+    if d_version == "auto":
+        for compiler in ["dmd", "ldc"]:
+            for k in SDK_VERSIONS.keys():
+                if platform in SDK_VERSIONS[k] and k.startswith(compiler):
+                    d_version = compiler
+                    break
+            if d_version != "auto":
+                break
+
+    if d_version in ["dmd", "ldc"]:
+        sdks = [k for k in SDK_VERSIONS.keys() if k.startswith(d_version) and platform in SDK_VERSIONS[k]]
+        sdks = sorted(sdks, key = lambda x: [int(v) if v.isdigit() else v for v in x[4:].split(".")], reverse = True)
+        d_version = sdks[0] if sdks else d_version
+
     if d_version not in SDK_VERSIONS:
-        repository_ctx.fail("Unknown d_version: %s" % d_version)
+        fail("Unknown d_version: %s" % d_version)
     if platform not in SDK_VERSIONS[d_version]:
-        repository_ctx.fail("Unsupported platform: %s for %s" % (platform, d_version))
+        fail("Unsupported platform: %s for %s" % (platform, d_version))
     sdk = SDK_VERSIONS[d_version][platform]
     repository_ctx.download_and_extract(
         url = sdk["url"],
