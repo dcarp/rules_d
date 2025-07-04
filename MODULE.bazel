@@ -19,7 +19,7 @@ bazel_dep(name = "rules_shell", version = "0.3.0", dev_dependency = True)
 bazel_dep(name = "stardoc", version = "0.7.1", dev_dependency = True)
 
 d = use_extension("//d:extensions.bzl", "d")
-d.toolchain(d_version = "dmd-2.111.0")
+d.toolchain(d_version = "auto")
 use_repo(d, "d_toolchains")
 
 register_toolchains("@d_toolchains//:all")

@@ -19,7 +19,12 @@ d_toolchain = tag_class(attrs = {
 Base name for generated repositories, allowing more than one d toolchain to be registered.
 Overriding the default is only permitted in the root module.
 """, default = _DEFAULT_NAME),
-    "d_version": attr.string(doc = "Explicit version of d.", mandatory = True),
+    "d_version": attr.string(doc = """\
+Version of the compiler. "auto" will select latest known dmd or ldc compiler available for
+the current platform. "dmd" or "ldc" will select the latest known version of the respective
+compiler. If a specific version is desired, it can be specified as "dmd-2.100.0" or
+"ldc-1.30.0".
+""", mandatory = True),
 })
 
 def _toolchain_extension(module_ctx):

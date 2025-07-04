@@ -46,5 +46,5 @@ rules_d_dependencies()
 
 d_register_toolchains(
     "d_toolchain",
-    d_version = "dmd-2.110.0",
+    d_version = "auto",
 )
