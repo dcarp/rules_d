@@ -38,7 +38,7 @@ def _get_os(ctx):
     elif ctx.target_platform_has_constraint(ctx.attr._windows_constraint[platform_common.ConstraintValueInfo]):
         return "windows"
     else:
-        fail("Unsupported OS: %s" % ctx.label)
+        fail("OS not supported")
 
 def _binary_name(ctx, name):
     """Returns the name of the binary based on the OS.
@@ -104,13 +104,13 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
     d_deps = [d[DInfo] for d in ctx.attr.deps if DInfo in d]
     compiler_flags = depset(ctx.attr.dopts, transitive = [d.compiler_flags for d in d_deps])
     imports = depset(
-        [paths.join(ctx.label.package, imp) for imp in ctx.attr.imports],
+        [paths.join(ctx.label.workspace_root, ctx.label.package, imp) for imp in ctx.attr.imports],
         transitive = [d.imports for d in d_deps],
     )
     linker_flags = depset(ctx.attr.linkopts, transitive = [d.linker_flags for d in d_deps])
     string_imports = depset(
-        ([ctx.label_package] if ctx.files.string_srcs else []) +
-        [paths.join(ctx.label.package, imp) for imp in ctx.attr.string_imports],
+        ([paths.join(ctx.label.workspace_root, ctx.label.package)] if ctx.files.string_srcs else []) +
+        [paths.join(ctx.label.workspace_root, ctx.label.package, imp) for imp in ctx.attr.string_imports],
         transitive = [d.string_imports for d in d_deps],
     )
     versions = depset(ctx.attr.versions, transitive = [d.versions for d in d_deps])
@@ -162,8 +162,8 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
             DInfo(
                 compiler_flags = compiler_flags,
                 imports = depset(
-                    [ctx.label.package] +
-                    [paths.join(ctx.label.package, imp) for imp in ctx.attr.imports],
+                    [paths.join(ctx.label.workspace_root, ctx.label.package)] +
+                    [paths.join(ctx.label.workspace_root, ctx.label.package, imp) for imp in ctx.attr.imports],
                     transitive = [d.imports for d in d_deps],
                 ),
                 interface_srcs = depset(
@@ -178,8 +178,8 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
                 ),
                 linker_flags = linker_flags,
                 string_imports = depset(
-                    ([ctx.label.package] if ctx.files.string_srcs else []) +
-                    [paths.join(ctx.label.package, imp) for imp in ctx.attr.string_imports],
+                    ([paths.join(ctx.label.workspace_root, ctx.label.package)] if ctx.files.string_srcs else []) +
+                    [paths.join(ctx.label.workspace_root, ctx.label.package, imp) for imp in ctx.attr.string_imports],
                     transitive = [d.string_imports for d in d_deps],
                 ),
                 versions = versions,

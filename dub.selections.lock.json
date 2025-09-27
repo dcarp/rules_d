@@ -1,0 +1,11 @@
+{
+  "dub_selections_integrity": "sha256-1VhiucFgY687bNkpyVd6KEMC3teNgo9Xw/ggEPaXvnI=",
+  "packages": [
+    {
+      "name": "semver",
+      "version": "0.6.0",
+      "url": "https://code.dlang.org/packages/semver/0.6.0.zip",
+      "integrity": "sha256-7ZUGQ1Zfv4vd722Vf9rOzN53AK2XR1cZ6fuaLbkASQE="
+    }
+  ]
+}
