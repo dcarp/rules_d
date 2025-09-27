@@ -2,4 +2,5 @@
 [default]
 extend-ignore-re = [
     "sha384-[A-Za-z0-9+/]{64}",
+    "sha256-[A-Za-z0-9+/=]{44}",
 ]
