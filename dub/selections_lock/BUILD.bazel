@@ -1,0 +1,24 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@rules_d//d:defs.bzl", "d_binary")
+
+d_binary(
+    name = "generate_selections_lock",
+    srcs = ["generate_selections_lock.d"],
+    data = ["//tools:dub"],
+    env = {
+        "DUB": "tools/dub.exe",
+    },
+    visibility = ["//visibility:public"],
+    deps = ["//tools:d_utils"],
+)
+
+bzl_library(
+    name = "selections_lock",
+    srcs = ["selections_lock.bzl"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@bazel_lib//lib:run_binary",
+        "@bazel_lib//lib:utils",
+        "@bazel_lib//lib:write_source_files",
+    ],
+)
