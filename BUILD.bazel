@@ -1,6 +1,7 @@
 load("@package_metadata//licenses/rules:license.bzl", "license")
 load("@package_metadata//purl:purl.bzl", "purl")
 load("@package_metadata//rules:package_metadata.bzl", "package_metadata")
+load("@rules_d//dub:defs.bzl", "dub_lock_dependencies")
 
 package_metadata(
     name = "package_metadata",
@@ -15,4 +16,10 @@ license(
     name = "license",
     kind = "@package_metadata//licenses/spdx:Apache-2.0",
     text = "LICENSE",
+)
+
+dub_lock_dependencies(
+    name = "dub_dependencies",
+    src = "dub.selections.json",
+    dub_selections_lock = "dub.selections.lock.json",
 )

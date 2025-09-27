@@ -246,7 +246,7 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
         ]
     else:
         env_with_expansions = {
-            k: expand_variables(ctx, ctx.expand_location(v, ctx.files.data), [output], "env")
+            k: expand_variables(ctx, ctx.expand_location(v, ctx.attr.data), [output], "env")
             for k, v in ctx.attr.env.items()
         }
         return [

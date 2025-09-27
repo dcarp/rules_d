@@ -1,0 +1,12 @@
+load("@rules_d//d:defs.bzl", "d_binary")
+
+d_binary(
+    name = "generate_selections_lock",
+    srcs = ["generate_selections_lock.d"],
+    data = ["//tools:dub"],
+    env = {
+        "DUB": "tools/dub.exe",
+    },
+    visibility = ["//visibility:public"],
+    deps = ["//tools:d_utils"],
+)
