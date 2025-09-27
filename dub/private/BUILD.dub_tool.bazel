@@ -1,0 +1,8 @@
+filegroup(
+    name = "dub_tool",
+    srcs = select({
+        "@platforms//os:linux": ["dub_tool/dub"],
+        "@platforms//os:macos": ["dub_tool/dub"],
+        "@platforms//os:windows": ["dub_tool/dub.exe"],
+    }),
+)
