@@ -1,0 +1,7 @@
+load("@rules_d//d:defs.bzl", "d_test")
+
+d_test(
+    name = "no_transitive_deps",
+    srcs = ["no_transitive_deps.d"],
+    deps = ["@dub//semver"],
+)
