@@ -1,5 +1,6 @@
 """Common definitions for D rules."""
 
+load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 load("//d/private:providers.bzl", "DInfo")
@@ -29,6 +30,21 @@ common_attrs = {
     "_macos_constraint": attr.label(default = "@platforms//os:macos", doc = "macOS platform constraint"),
     "_windows_constraint": attr.label(default = "@platforms//os:windows", doc = "Windows platform constraint"),
 }
+
+runnable_attrs = dicts.add(
+    common_attrs,
+    {
+        "env": attr.string_dict(doc = "Environment variables for the binary at runtime."),
+        "data": attr.label_list(allow_files = True, doc = "List of files to be made available at runtime."),
+    },
+)
+
+library_attrs = dicts.add(
+    common_attrs,
+    {
+        "source_only": attr.bool(doc = "If true, the source files are compiled, but not library is produced."),
+    },
+)
 
 def _get_os(ctx):
     if ctx.target_platform_has_constraint(ctx.attr._linux_constraint[platform_common.ConstraintValueInfo]):
@@ -186,4 +202,10 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
             ),
         ]
     else:
-        return [DefaultInfo(executable = output)]
+        return [
+            DefaultInfo(
+                executable = output,
+                runfiles = ctx.runfiles(files = ctx.files.data),
+            ),
+            RunEnvironmentInfo(environment = ctx.attr.env),
+        ]

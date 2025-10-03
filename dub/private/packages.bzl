@@ -16,7 +16,10 @@ def register_package(repository_ctx, package):
         stripPrefix = "{}-{}".format(package["name"], package["version"]),
         output = package["name"],
     )
-    result = repository_ctx.execute(["dub", "describe"], working_directory = package["name"])
+    result = repository_ctx.execute(
+        [repository_ctx.path("dub_tool/dub"), "describe"],
+        working_directory = package["name"],
+    )
     if result.return_code != 0:
         fail("Failed to run dub describe for package {}: {}".format(package["name"], result.stderr))
     package_metadata = json.decode(result.stdout)
