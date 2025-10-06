@@ -70,12 +70,18 @@ int main(string[] args)
 {
     import std.getopt : defaultGetoptPrinter, getopt;
     import std.stdio : writefln, writeln;
+    import std.process : environment;
 
     string bazelGeneratingTarget;
     bool check = false;
     string inputFilePath;
     bool generate = false;
     string outputFilePath;
+
+    auto dc = environment.get("DC");
+    auto dub = environment.get("DUB");
+    writeln("Using D compiler: ", dc ? dc : "dmd (default)");
+    writeln("Using dub: ", dub ? dub : "dub (default)");
 
     auto parseArgs = args.getopt(
         "bazel_generating_target|b", "Document the bazel generating target.", &bazelGeneratingTarget,

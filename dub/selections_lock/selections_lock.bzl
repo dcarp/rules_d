@@ -1,7 +1,7 @@
 """Provides a macro to manage dub dependencies with a lock file.
 """
 
-load("@rules_d//d:defs.bzl", "d_binary", "d_test")
+load("@bazel_skylib//rules:native_binary.bzl", "native_binary", "native_test")
 
 def dub_lock_dependencies(
         name,
@@ -36,13 +36,17 @@ def dub_lock_dependencies(
     update_target_name = name + ".update"
     update_target_full_name = "//{}:{}".format(native.package_name(), update_target_name)
 
-    d_binary(
+    native_binary(
         name = update_target_name,
-        srcs = ["//dub/private/selections_lock:dub_selections_lock_json.d"],
+        src = "//dub/selections_lock",
         data = [
             src,
             dub_selections_lock,
         ],
+        env = {
+            "DC": "$(DC)",
+            "DUB": "$(DUB)",
+        },
         args = [
             "--generate",
             "--bazel_generating_target={}".format(update_target_full_name),
@@ -54,11 +58,11 @@ def dub_lock_dependencies(
             "no-sandbox",
         ],
         visibility = visibility,
-        deps = ["//tools:d_utils"],
     )
-    d_test(
+
+    native_test(
         name = test_target_name,
-        srcs = ["//dub/private/selections_lock:dub_selections_lock_json.d"],
+        src = "//dub/selections_lock",
         data = [
             src,
             dub_selections_lock,
@@ -74,6 +78,14 @@ def dub_lock_dependencies(
             "no-sandbox",
         ],
         visibility = visibility,
-        deps = ["//tools:d_utils"],
         **kwargs
+    )
+
+    native.genrule(
+        name = name + ".bla",
+        cmd = "echo DC=$(DC) DUB=$(DUB) $(location @rules_d//dub/selections_lock) > $@",
+        executable = True,
+        outs = [name + "bla.bat"],
+        toolchains = ["@rules_d//d:resolved_toolchain"],
+        tools = ["@rules_d//dub/selections_lock"],
     )
