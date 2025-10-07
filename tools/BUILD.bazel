@@ -18,7 +18,7 @@ d_library(
         "integrity_hash.d",
     ],
     linkopts = ["-lcurl"],
-    visibility = ["//visibility:public"],
+    visibility = ["//dub:__subpackages__"],
 )
 
 d_binary(
@@ -26,5 +26,6 @@ d_binary(
     srcs = [
         "generate_compiler_versions_bzl.d",
     ],
+    tags = ["manual"],  # Not built by default; 'curl' dependency may not be available on all platforms.
     deps = [":d_utils"],
 )

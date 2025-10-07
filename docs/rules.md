@@ -25,7 +25,7 @@ d_binary(<a href="#d_binary-name">name</a>, <a href="#d_binary-deps">deps</a>, <
 | <a id="d_binary-srcs"></a>srcs |  List of D '.d' or '.di' source files.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="d_binary-data"></a>data |  List of files to be made available at runtime.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="d_binary-dopts"></a>dopts |  Compiler flags.   | List of strings | optional |  `[]`  |
-| <a id="d_binary-env"></a>env |  Environment variables for the binary at runtime.   | <a href="https://bazel.build/rules/lib/dict">Dictionary: String -> String</a> | optional |  `{}`  |
+| <a id="d_binary-env"></a>env |  Environment variables for the binary at runtime. Subject of location and make variable expansion.   | <a href="https://bazel.build/rules/lib/dict">Dictionary: String -> String</a> | optional |  `{}`  |
 | <a id="d_binary-imports"></a>imports |  List of import paths.   | List of strings | optional |  `[]`  |
 | <a id="d_binary-linkopts"></a>linkopts |  Linker flags passed via -L flags.   | List of strings | optional |  `[]`  |
 | <a id="d_binary-string_imports"></a>string_imports |  List of string import paths.   | List of strings | optional |  `[]`  |
@@ -85,7 +85,7 @@ d_test(<a href="#d_test-name">name</a>, <a href="#d_test-deps">deps</a>, <a href
 | <a id="d_test-srcs"></a>srcs |  List of D '.d' or '.di' source files.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="d_test-data"></a>data |  List of files to be made available at runtime.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="d_test-dopts"></a>dopts |  Compiler flags.   | List of strings | optional |  `[]`  |
-| <a id="d_test-env"></a>env |  Environment variables for the binary at runtime.   | <a href="https://bazel.build/rules/lib/dict">Dictionary: String -> String</a> | optional |  `{}`  |
+| <a id="d_test-env"></a>env |  Environment variables for the binary at runtime. Subject of location and make variable expansion.   | <a href="https://bazel.build/rules/lib/dict">Dictionary: String -> String</a> | optional |  `{}`  |
 | <a id="d_test-imports"></a>imports |  List of import paths.   | List of strings | optional |  `[]`  |
 | <a id="d_test-linkopts"></a>linkopts |  Linker flags passed via -L flags.   | List of strings | optional |  `[]`  |
 | <a id="d_test-string_imports"></a>string_imports |  List of string import paths.   | List of strings | optional |  `[]`  |

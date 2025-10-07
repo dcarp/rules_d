@@ -1,5 +1,6 @@
 """Common definitions for D rules."""
 
+load("@aspect_bazel_lib//lib:expand_make_vars.bzl", "expand_variables")
 load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
@@ -34,7 +35,7 @@ common_attrs = {
 runnable_attrs = dicts.add(
     common_attrs,
     {
-        "env": attr.string_dict(doc = "Environment variables for the binary at runtime."),
+        "env": attr.string_dict(doc = "Environment variables for the binary at runtime. Subject of location and make variable expansion."),
         "data": attr.label_list(allow_files = True, doc = "List of files to be made available at runtime."),
     },
 )
@@ -202,10 +203,14 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
             ),
         ]
     else:
+        env_with_expansions = {
+            k: expand_variables(ctx, ctx.expand_location(v, ctx.files.data), [output], "env")
+            for k, v in ctx.attr.env.items()
+        }
         return [
             DefaultInfo(
                 executable = output,
                 runfiles = ctx.runfiles(files = ctx.files.data),
             ),
-            RunEnvironmentInfo(environment = ctx.attr.env),
+            RunEnvironmentInfo(environment = env_with_expansions),
         ]
