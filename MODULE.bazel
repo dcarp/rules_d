@@ -20,6 +20,7 @@ bazel_dep(name = "gazelle", version = "0.42.0", dev_dependency = True, repo_name
 bazel_dep(name = "stardoc", version = "0.7.1", dev_dependency = True)
 
 d = use_extension("//d:extensions.bzl", "d")
+d.toolchain(d_version = "ldc-1.41.0")
 d.toolchain(d_version = "dmd-2.111.0")
 use_repo(d, "d_toolchains")
 
