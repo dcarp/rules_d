@@ -1,6 +1,7 @@
 load("@bazel_gazelle//:def.bzl", "gazelle", "gazelle_binary")
 load("@bazelrc-preset.bzl", "bazelrc_preset")
 load("@rules_d//d:defs.bzl", "d_binary", "d_library")
+load("@rules_d//tools:tool_runner.bzl", "tool_runner")
 
 bazelrc_preset(
     name = "preset",
@@ -37,4 +38,16 @@ d_binary(
     ],
     tags = ["manual"],  # Not built by default; 'curl' dependency may not be available on all platforms.
     deps = [":d_utils"],
+)
+
+tool_runner(
+    name = "dc",
+    visibility = ["//visibility:public"],
+    which = "dc",
+)
+
+tool_runner(
+    name = "dub",
+    visibility = ["//visibility:public"],
+    which = "dub",
 )
