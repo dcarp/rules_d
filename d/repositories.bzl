@@ -41,7 +41,7 @@ def rules_d_dependencies():
 ########
 _DOC = "Fetch external tools needed for d toolchain"
 _ATTRS = {
-    "d_version": attr.string(mandatory = True, values = ["auto", "dmd", "ldc"] + SDK_VERSIONS.keys()),
+    "d_version": attr.string(mandatory = True, values = SDK_VERSIONS.keys()),
     "platform": attr.string(mandatory = True, values = PLATFORMS.keys()),
 }
 
@@ -60,20 +60,6 @@ def _archive_prefix(url):
 def _d_repo_impl(repository_ctx):
     d_version = repository_ctx.attr.d_version
     platform = repository_ctx.attr.platform
-
-    if d_version == "auto":
-        for compiler in ["dmd", "ldc"]:
-            for version, platforms in SDK_VERSIONS.items():
-                if version.startswith(compiler) and platform in platforms:
-                    d_version = compiler
-                    break
-            if d_version != "auto":
-                break
-
-    if d_version in ["dmd", "ldc"]:
-        sdks = [version for version, platforms in SDK_VERSIONS.items() if version.startswith(d_version) and platform in platforms]
-        sdks = sorted(sdks, key = lambda x: [int(v) if v.isdigit() else v for v in x[4:].split(".")], reverse = True)
-        d_version = sdks[0] if sdks else d_version
 
     if d_version not in SDK_VERSIONS:
         fail("Unknown d_version: %s" % d_version)
@@ -107,12 +93,15 @@ def d_register_toolchains(name, register = True, **kwargs):
     Users can avoid this macro and do these steps themselves, if they want more control.
 
     Args:
-        name: base name for all created repos, like "d1_14"
+        name: base name for all created repositories
         register: whether to call through to native.register_toolchains.
             Should be True for WORKSPACE users, but false when used under bzlmod extension
         **kwargs: passed to each d_repositories call
     """
     for platform in PLATFORMS.keys():
+        d_version = kwargs.get("d_version")
+        if not d_version or d_version not in SDK_VERSIONS or platform not in SDK_VERSIONS[d_version]:
+            continue
         d_repositories(name = name + "_" + platform, platform = platform, **kwargs)
         if register:
             native.register_toolchains("@%s_toolchains//:%s_toolchain" % (name, platform))
@@ -121,3 +110,36 @@ def d_register_toolchains(name, register = True, **kwargs):
         name = name + "_toolchains",
         user_repository_name = name,
     )
+
+def _get_platform_id(os):
+    """Get the platform id for the given os repository_os information."""
+    if os.name == "linux":
+        if os.arch in ["amd64", "x86_64"]:
+            return "x86_64-unknown-linux-gnu"
+        elif os.arch in ["aarch64", "arm64"]:
+            return "aarch64-unknown-linux-gnu"
+    elif os.name in ["darwin", "mac os x", "macos", "osx"]:
+        if os.arch in ["amd64", "x86_64"]:
+            return "x86_64-apple-darwin"
+        elif os.arch in ["aarch64", "arm64"]:
+            return "aarch64-apple-darwin"
+    elif "windows" in os.name:
+        if os.arch in ["amd64", "x86_64"]:
+            return "x86_64-pc-windows-msvc"
+    fail("Unsupported OS/arch combination: %s/%s" % (os.name, os.arch))
+
+def select_compiler_by_os(versions, os):
+    """Select the most appropriate compiler version for the given OS.
+
+    Args:
+        versions: list of compiler versions
+        os: repository_os information
+
+    Returns:
+        selected compiler version
+    """
+    platform_id = _get_platform_id(os)
+    for version in versions:
+        if platform_id in SDK_VERSIONS.get(version, {}):
+            return version
+    fail("No suitable d compiler found for OS %s among versions: %s." % (os, ", ".join(versions)))

@@ -10,7 +10,7 @@ names (the latest version will be picked for each name) and can register them as
 effectively overriding the default named toolchain due to toolchain resolution precedence.
 """
 
-load(":repositories.bzl", "d_register_toolchains")
+load(":repositories.bzl", "d_register_toolchains", "select_compiler_by_os")
 
 _DEFAULT_NAME = "d"
 
@@ -20,10 +20,9 @@ Base name for generated repositories, allowing more than one d toolchain to be r
 Overriding the default is only permitted in the root module.
 """, default = _DEFAULT_NAME),
     "d_version": attr.string(doc = """\
-Version of the compiler. "auto" will select latest known dmd or ldc compiler available for
-the current platform. "dmd" or "ldc" will select the latest known version of the respective
-compiler. If a specific version is desired, it can be specified as "dmd-2.100.0" or
-"ldc-1.30.0".
+Fully qualified compiler version, for example "dmd-2.111.0" or "ldc-1.41.0".
+The extension selects the first supplied version compatible with the current platform
+and fails if none match.
 """, mandatory = True),
 })
 
@@ -40,18 +39,9 @@ def _toolchain_extension(module_ctx):
                 registrations[toolchain.name] = []
             registrations[toolchain.name].append(toolchain.d_version)
     for name, versions in registrations.items():
-        if len(versions) > 1:
-            # TODO: should be semver-aware, using MVS
-            selected = sorted(versions, reverse = True)[0]
-
-            # buildifier: disable=print
-            print("NOTE: d toolchain {} has multiple versions {}, selected {}".format(name, versions, selected))
-        else:
-            selected = versions[0]
-
         d_register_toolchains(
             name = name,
-            d_version = selected,
+            d_version = select_compiler_by_os(versions, module_ctx.os),
             register = False,
         )
 

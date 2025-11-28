@@ -87,6 +87,11 @@ load("@rules_d//d:repositories.bzl", "d_register_toolchains", "rules_d_dependenc
 rules_d_dependencies()
 
 d_register_toolchains(
-    "d_toolchain",
-    d_version = "auto",
+    "dmd_toolchain",
+    d_version = "dmd-2.111.0",
+)
+
+d_register_toolchains(
+    "ldc_toolchain",
+    d_version = "ldc-1.41.0",
 )
