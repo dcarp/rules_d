@@ -1,7 +1,8 @@
 // Small wrapper over curl C-API as std.net.curl seems to be broken
 
-import std.algorithm : each;
 import etc.c.curl;
+import std.algorithm : each;
+import std.conv : to;
 import std.exception : enforce;
 import std.format : format;
 import std.range : empty;
@@ -32,8 +33,8 @@ struct CurlDownloader
         setOptions(curl, url, headers, &get_callback, &buffer);
 
         auto result = curl_easy_perform(curl);
-        enforce(result == CurlError.ok, new CurlException(
-                "curl_easy_perform failed: %s".format(curl_easy_strerror(result))));
+        enforce(result == CurlError.ok, new CurlException("Get from '%s' failed: %s".format(url, curl_easy_strerror(
+                result).to!string)));
         return buffer.data;
     }
 
@@ -57,8 +58,8 @@ struct CurlDownloader
         setOptions(curl, url, headers, &download_callback, &file);
 
         auto result = curl_easy_perform(curl);
-        enforce(result == CurlError.ok, new CurlException(
-                "curl_easy_perform failed: %s".format(curl_easy_strerror(result))));
+        enforce(result == CurlError.ok, new CurlException("Downloading '%s' failed: %s".format(url, curl_easy_strerror(
+                result).to!string)));
     }
 
 private:
