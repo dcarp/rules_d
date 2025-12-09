@@ -3,6 +3,7 @@
 load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
+load("@rules_cc//cc:defs.bzl", "cc_common")
 load("//d/private:providers.bzl", "DInfo")
 load("//d/private/rules:utils.bzl", "object_file_name", "static_library_name")
 
@@ -67,25 +68,7 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
         The DInfo provider containing the compilation information.
     """
     toolchain = ctx.toolchains["//d:toolchain_type"].d_toolchain_info
-    cc_deps = [d[CcInfo] for d in ctx.attr.deps if CcInfo in d]
-    cc_linker_inputs = [
-        linker_input
-        for dep in cc_deps
-        for linker_input in dep.linking_context.linker_inputs.to_list()
-    ]
-    cc_libraries = depset([
-        lib.pic_static_library if lib.pic_static_library else lib.static_library
-        for li in cc_linker_inputs
-        for lib in li.libraries
-    ], order = "topological")
-    fix_linker_flags = {
-        "-pthread": "-lpthread",
-    }
-    cc_linker_flags = depset([
-        fix_linker_flags.get(flag, flag)
-        for li in cc_linker_inputs
-        for flag in li.user_link_flags
-    ])
+    c_deps = [d[CcInfo] for d in ctx.attr.deps if CcInfo in d]
     d_deps = [d[DInfo] for d in ctx.attr.deps if DInfo in d]
     compiler_flags = depset(
         ctx.attr.dopts,
@@ -97,7 +80,7 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
     )
     linker_flags = depset(
         ctx.attr.linkopts,
-        transitive = [d.linker_flags for d in d_deps] + [cc_linker_flags],
+        transitive = [d.linker_flags for d in d_deps],
     )
     string_imports = depset(
         ([paths.join(ctx.label.workspace_root, ctx.label.package)] if ctx.files.string_srcs else []) +
@@ -119,9 +102,14 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
     if target_type == TARGET_TYPE.LIBRARY:
         args.add("-lib")
         output = ctx.actions.declare_file(static_library_name(ctx, ctx.label.name))
+        library_to_link = None if ctx.attr.source_only else cc_common.create_library_to_link(
+            actions = ctx.actions,
+            static_library = output,
+        )
     else:
         args.add("-c")
         output = ctx.actions.declare_file(object_file_name(ctx, ctx.label.name))
+        library_to_link = None
     args.add(output, format = "-of=%s")
 
     inputs = depset(
@@ -140,6 +128,17 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
         mnemonic = "Dcompile",
         progress_message = "Compiling D %s %s" % (target_type, ctx.label.name),
     )
+    linker_input = cc_common.create_linker_input(
+        owner = ctx.label,
+        libraries = depset(direct = [library_to_link] if library_to_link else None),
+    )
+    linking_context = cc_common.create_linking_context(
+        linker_inputs = depset(
+            direct = [linker_input],
+            transitive = [
+                d.linking_context.linker_inputs for d in c_deps + d_deps]
+        ),
+    )
     return DInfo(
         compilation_output = output,
         compiler_flags = compiler_flags,
@@ -152,12 +151,7 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
             ctx.files.srcs + ctx.files.string_srcs,
             transitive = [d.interface_srcs for d in d_deps],
         ),
-        libraries = depset(
-            [] if (target_type != TARGET_TYPE.LIBRARY or ctx.attr.source_only) else [output],
-            order = "topological",
-            transitive = [d.libraries for d in d_deps] +
-                         [cc_libraries],
-        ),
+        linking_context = linking_context,
         linker_flags = linker_flags,
         string_imports = depset(
             ([paths.join(ctx.label.workspace_root, ctx.label.package)] if ctx.files.string_srcs else []) +

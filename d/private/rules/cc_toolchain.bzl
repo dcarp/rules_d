@@ -89,4 +89,5 @@ def find_cc_toolchain_for_linking(ctx):
         cc_compiler = cc_compiler,
         cc_linking_options = cc_linking_options,
         env = env,
+        feature_configuration = feature_configuration,
     )
