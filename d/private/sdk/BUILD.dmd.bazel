@@ -94,19 +94,16 @@ d_toolchain(
     d_compiler = ":dmd",
     dub_tool = ":dub",
     libphobos = ":libphobos",
-    linker_flags = [
-        "-conf=",
-    ] + select({
+    linker_flags = select({
         "@platforms//os:linux": [
-            "-L-L{D_COMPILER_ROOT}/linux/lib64",
-            "-L--export-dynamic",
+            "-L{D_COMPILER_ROOT}/linux/lib64",
         ],
-        "@platforms//os:macos": ["-L-L{D_COMPILER_ROOT}/osx/lib"],
+        "@platforms//os:macos": ["-L{D_COMPILER_ROOT}/osx/lib"],
         "@platforms//os:windows": [
-            "-L/LIBPATH:{D_COMPILER_ROOT}/windows/lib64",
-            "-L/DEFAULTLIB:msvcrt.lib",
-            "-L/NODEFAULTLIB:libcmt",
-            "-L/INCREMENTAL:NO",
+            "/LIBPATH:{D_COMPILER_ROOT}/windows/lib64",
+            "/DEFAULTLIB:msvcrt.lib",
+            "/NODEFAULTLIB:libcmt",
+            "/INCREMENTAL:NO",
         ],
     }),
     rdmd_tool = ":rdmd",
