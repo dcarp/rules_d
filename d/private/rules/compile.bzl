@@ -2,8 +2,8 @@
 
 load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@bazel_skylib//lib:paths.bzl", "paths")
-load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 load("@rules_cc//cc:defs.bzl", "cc_common")
+load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 load("//d/private:providers.bzl", "DInfo")
 load("//d/private/rules:utils.bzl", "object_file_name", "static_library_name")
 
@@ -136,7 +136,9 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
         linker_inputs = depset(
             direct = [linker_input],
             transitive = [
-                d.linking_context.linker_inputs for d in c_deps + d_deps]
+                d.linking_context.linker_inputs
+                for d in c_deps + d_deps
+            ],
         ),
     )
     return DInfo(
