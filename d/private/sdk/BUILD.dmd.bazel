@@ -101,9 +101,8 @@ d_toolchain(
         "@platforms//os:macos": ["-L{D_COMPILER_ROOT}/osx/lib"],
         "@platforms//os:windows": [
             "/LIBPATH:{D_COMPILER_ROOT}/windows/lib64",
-            "/DEFAULTLIB:msvcrt.lib",
             "/NODEFAULTLIB:libcmt",
-            "/INCREMENTAL:NO",
+            "/DEFAULTLIB:legacy_stdio_definitions.lib",
         ],
     }),
     rdmd_tool = ":rdmd",
