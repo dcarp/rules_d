@@ -15,6 +15,7 @@ bzl_library(
     deps = [
         "//d/private/rules:compile",
         "//d/private/rules:link",
+        "@bazel_lib//lib:expand_make_vars",
     ],
 )
 
@@ -68,7 +69,6 @@ bzl_library(
     ],
     deps = [
         "//d/private/rules:cc_toolchain",
-        "@bazel_lib//lib:expand_make_vars",
         "@rules_cc//cc:defs_bzl",
     ],
 )
@@ -83,6 +83,7 @@ bzl_library(
     deps = [
         "//d/private/rules:compile",
         "//d/private/rules:link",
+        "@bazel_lib//lib:expand_make_vars",
         "@rules_cc//cc:find_cc_toolchain_bzl",
     ],
 )
