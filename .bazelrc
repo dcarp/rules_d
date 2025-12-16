@@ -23,6 +23,8 @@ common --lockfile_mode=update
 
 # project-specific settings
 startup --windows_enable_symlinks
+# workaround for bazel8 error when --enable_workspace and --enable_bzlmod=false
+common --incompatible_autoload_externally=
 
 # Allows tests to run bazelisk-in-bazel, since this is the cache folder used
 common:ci --disk_cache=~/.cache/bazel

@@ -31,9 +31,9 @@ def rules_d_dependencies():
     )
     http_archive(
         name = "package_metadata",
-        sha256 = "49ed11e5d6b752c55fa539cbb10b2736974f347b081d7bd500a80dacb7dbec06",
-        strip_prefix = "supply-chain-0.0.5/metadata",
-        url = "https://github.com/bazel-contrib/supply-chain/releases/download/v0.0.5/supply-chain-v0.0.5.tar.gz",
+        sha256 = "5bd0cc7594ea528fd28f98d82457f157827d48cc20e07bcfdbb56072f35c8f67",
+        strip_prefix = "supply-chain-0.0.6/metadata",
+        url = "https://github.com/bazel-contrib/supply-chain/releases/download/v0.0.6/supply-chain-v0.0.6.tar.gz",
     )
 
 ########
