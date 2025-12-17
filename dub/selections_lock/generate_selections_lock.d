@@ -6,7 +6,7 @@ import std.exception : enforce;
 import std.file : exists, isFile, mkdirRecurse, read, readText, rmdirRecurse, tempDir;
 import std.format : format;
 import std.json : parseJSON, JSONOptions, JSONType, JSONValue;
-import std.path : buildNormalizedPath;
+import std.path : baseName, buildNormalizedPath;
 import std.range : empty, join;
 import std.string : assumeUTF, endsWith, startsWith;
 import std.stdio : File, toFile;
@@ -139,7 +139,116 @@ string header_definition(bool hasBinary, bool hasLibrary)
 
 string binary_definition(JSONValue target)
 {
-    return "binary_def";
+    enum string[] attributesOrder = [
+            "name", "srcs", "imports", "string_imports", "string_srcs",
+            "versions", "dopts", "linkopts", "data", "visibility", "deps"
+        ];
+
+    string[string] attributes;
+    auto getArray = (string key)
+    {
+        if (target.type == JSONType.object && key in target.object)
+            return target[key].array;
+        return JSONValue[].init;
+    };
+    auto files = getArray("files");
+    auto depLabel = (JSONValue dep)
+    {
+        string name;
+        final switch (dep.type)
+        {
+        case JSONType.string:
+            name = dep.str;
+            break;
+        case JSONType.object:
+            if ("name" in dep.object)
+                name = dep["name"].str;
+            else if ("package" in dep.object)
+                name = dep["package"].str;
+            else if ("path" in dep.object)
+                name = dep["path"].str.baseName;
+            break;
+        case JSONType.array:
+        case JSONType.false_:
+        case JSONType.float_:
+        case JSONType.integer:
+        case JSONType.null_:
+        case JSONType.true_:
+        case JSONType.uinteger:
+            enforce(false, "Unsupported dependency format in target %s.".format(
+                    target["name"].str));
+        }
+        enforce(!name.empty, "Unsupported dependency format in target %s.".format(
+                target["name"].str));
+        return "//%s".format(name);
+    };
+
+    attributes["name"] = `"%s"`.format(target["name"].str);
+    attributes["srcs"] = `[%s]`.format(
+        files
+            .filter!(f => f["role"].str == "source")
+            .map!(f => `"%s"`.format(f["path"].str))
+            .join(", "));
+    auto importPaths = getArray("importPaths");
+    if (!importPaths.empty)
+        attributes["imports"] = `[%s]`.format(
+            importPaths
+                .map!(p => `"%s"`.format(p.str))
+                .join(", "));
+    auto stringImportPaths = getArray("stringImportPaths");
+    if (!stringImportPaths.empty)
+        attributes["string_imports"] = `[%s]`.format(
+            stringImportPaths
+                .map!(p => `"%s"`.format(p.str))
+                .join(", "));
+    auto stringImportFiles = files
+        .filter!(f => f["role"].str == "stringImport")
+        .map!(f => `"%s"`.format(f["path"].str))
+        .join(", ");
+    if (!stringImportFiles.empty)
+        attributes["string_srcs"] = `[%s]`.format(stringImportFiles);
+    auto resources = files
+        .filter!(f => f["role"].str == "resource")
+        .map!(f => `"%s"`.format(f["path"].str))
+        .join(", ");
+    if (!resources.empty)
+        attributes["data"] = `[%s]`.format(resources);
+    auto versions = getArray("versions");
+    if (!versions.empty)
+        attributes["versions"] = `[%s]`.format(
+            versions
+                .map!(v => `"%s"`.format(v.str))
+                .join(", "));
+    auto dopts = getArray("dflags");
+    if (!dopts.empty)
+        attributes["dopts"] = `[%s]`.format(
+            dopts
+                .map!(flag => `"%s"`.format(flag.str))
+                .join(", "));
+    string[] linkopts;
+    linkopts ~= getArray("lflags")
+        .map!(flag => `"%s"`.format(flag.str))
+        .array;
+    linkopts ~= getArray("libPaths")
+        .map!(path => `"-L-L%s"`.format(path.str))
+        .array;
+    linkopts ~= getArray("libs")
+        .map!(lib => `"-L-l%s"`.format(lib.str))
+        .array;
+    if (!linkopts.empty)
+        attributes["linkopts"] = `[%s]`.format(linkopts.join(", "));
+    auto deps = getArray("dependencies")
+        .map!depLabel
+        .join(", ");
+    if (!deps.empty)
+        attributes["deps"] = `[%s]`.format(deps);
+    attributes["visibility"] = `["//visibility:public"]`;
+
+    return "\nd_binary(\n%s\n)\n".format(
+        attributesOrder
+            .filter!(key => key in attributes)
+            .map!(key => "    %s=%s,".format(key, attributes[key]))
+            .join("\n"));
 }
 
 string library_definition(JSONValue target, bool isSourceOnly = false)
