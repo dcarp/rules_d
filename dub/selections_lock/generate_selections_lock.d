@@ -1,14 +1,15 @@
 module dub.selections_lock.generate_selections_lock;
 
-import std.algorithm : each, filter, map;
+import std.algorithm : canFind, each, filter, map;
 import std.array : array, assocArray, replace;
+import std.conv : to;
 import std.exception : enforce;
 import std.file : exists, isFile, mkdirRecurse, read, readText, rmdirRecurse, tempDir;
 import std.format : format;
 import std.json : parseJSON, JSONOptions, JSONType, JSONValue;
-import std.path : buildNormalizedPath;
+import std.path : baseName, buildNormalizedPath, relativePath;
 import std.range : empty, join;
-import std.string : assumeUTF, endsWith, startsWith;
+import std.string : assumeUTF, endsWith, startsWith, strip;
 import std.stdio : File, toFile;
 import std.typecons : tuple;
 
@@ -45,6 +46,7 @@ struct Package
     string version_;
     string integrity;
     string buildFileContent;
+    Target[] targets;
 
     string archiveFile() const
     {
@@ -126,6 +128,101 @@ void unpack(Package package_)
     }
 }
 
+enum TargetType
+{
+    autodetect,
+    none,
+    executable,
+    library,
+    sourceLibrary,
+    dynamicLibrary,
+    staticLibrary,
+    object
+}
+
+struct Target
+{
+    string targetName;
+    TargetType targetType;
+    string targetPath;
+    string mainSourceFile;
+    string[] dflags;
+    string[] lflags;
+    string[] libs;
+    string[] sourceFiles;
+    string[] injectSourceFiles;
+    string[] versions;
+    string[] importPaths;
+    string[] stringImportPaths;
+    string[] stringSrcs;
+    string[string] environments;
+    string[string] buildEnvironments;
+    string[string] runEnvironments;
+}
+
+Target parseTarget(JSONValue json)
+{
+    Target target;
+    json = json["buildSettings"].object;
+    target.targetName = json["targetName"].str;
+    enforce([JSONType.integer, JSONType.string].canFind(json["targetType"].type), "Invalid targetType JSON type.");
+    if (json["targetType"].type == JSONType.integer)
+        target.targetType = json["targetType"].integer.to!TargetType;
+    else if (json["targetType"].type == JSONType.string)
+        target.targetType = json["targetType"].str.to!TargetType;
+    target.targetPath = json["targetPath"].str;
+    target.mainSourceFile = json["mainSourceFile"].str;
+    target.dflags = json["dflags"].array.map!(v => v.str).array;
+    target.lflags = json["lflags"].array.map!(v => v.str).array;
+    target.libs = json["libs"].array.map!(v => v.str).array;
+    target.sourceFiles = json["sourceFiles"].array
+        .map!(v => v.str.relativePath(target.targetPath)).array;
+    target.injectSourceFiles = json["injectSourceFiles"].array
+        .map!(v => v.str.relativePath(target.targetPath)).array;
+    target.versions = json["versions"].array.map!(v => v.str).array;
+    target.importPaths = json["importPaths"].array
+        .map!(v => v.str.relativePath(target.targetPath).strip("", "/")).array;
+    target.stringImportPaths = json["stringImportPaths"].array
+        .map!(v => v.str.relativePath(target.targetPath).strip("", "/")).array;
+    target.stringSrcs = json["stringImportFiles"].array
+        .map!(v => v.str.relativePath(target.targetPath)).array;
+    target.environments = json["environments"].object.byKeyValue
+        .map!(env => tuple(env.key, env.value.str)).assocArray;
+    target.buildEnvironments = json["buildEnvironments"].object.byKeyValue
+        .map!(env => tuple(env.key, env.value.str)).assocArray;
+    target.runEnvironments = json["runEnvironments"].object.byKeyValue
+        .map!(env => tuple(env.key, env.value.str)).assocArray;
+    return target;
+}
+
+Target[] describePackage(Package package_)
+{
+    import std.file : getcwd;
+    import std.process : Config, execute;
+
+    if (!package_.archiveFile.exists)
+        package_.download;
+
+    if (!package_.unpackPath.exists)
+        package_.unpack;
+
+    // return no targets if this is a Bazel package already
+    if (package_.unpackPath.buildNormalizedPath("WORKSPACE").exists ||
+        package_.unpackPath.buildNormalizedPath("MODULE.bazel").exists)
+        return [];
+
+    auto result = execute([
+        config.dubExecutable,
+        "describe",
+        "--root=%s".format(package_.unpackPath),
+    ]);
+    enforce(result.status == 0, "Failed to describe package %s: %s".format(
+            package_.versionedName, result.output));
+
+    auto dub_description = result.output.parseJSON;
+    return dub_description["targets"].array.map!(t => parseTarget(t)).array;
+}
+
 string header_definition(bool hasBinary, bool hasLibrary)
 {
     if (hasBinary && hasLibrary)
@@ -137,98 +234,73 @@ string header_definition(bool hasBinary, bool hasLibrary)
     return "";
 }
 
-string binary_definition(JSONValue target)
+string target_definition(Target target)
 {
-    return "binary_def";
-}
-
-string library_definition(JSONValue target, bool isSourceOnly = false)
-{
-    enum string[] attributesOrder = [
-            "name", "srcs", "imports", "source_only", "visibility", "deps"
-        ];
-
-    string[string] attributes;
-    attributes["name"] = `"%s"`.format(target["name"].str);
-    attributes["srcs"] = `[%s]`.format(
-        target["files"].array
-            .filter!(f => f["role"].str == "source")
-            .map!(f => `"%s"`.format(f["path"].str))
-            .join(", "));
-    if (!target["importPaths"].array.empty)
-        attributes["imports"] = `[%s]`.format(
-            target["importPaths"].array
-                .map!(p => `"%s"`.format(p.str))
-                .join(", "));
-    if (isSourceOnly)
-        attributes["source_only"] = "True";
-    attributes["visibility"] = `["//visibility:public"]`;
-
-    return "\nd_library(\n%s\n)\n".format(
-        attributesOrder
-            .filter!(key => key in attributes)
-            .map!(key => "    %s=%s,".format(key, attributes[key]))
-            .join("\n"));
+    string[] result;
+    switch (target.targetType)
+    {
+    case TargetType.library:
+    case TargetType.sourceLibrary:
+    case TargetType.dynamicLibrary:
+    case TargetType.staticLibrary:
+        result ~= "d_library(";
+        break;
+    case TargetType.executable:
+        result ~= "d_binary(";
+        break;
+    default:
+        enforce(false, "Unsupported target type %s.".format(target.targetType));
+        return "";
+    }
+    result ~= "    name = \"%s\",".format(target.targetName);
+    if (!target.sourceFiles.empty)
+        result ~= "    srcs = [%s],".format(target.sourceFiles
+                .map!(s => "\"" ~ s ~ "\"").join(", "));
+    if (!target.importPaths.empty)
+        result ~= "    imports = [%s],".format(
+            target.importPaths
+                .map!(s => "\"" ~ s ~ "\"").join(", "));
+    if (target.targetType == TargetType.sourceLibrary)
+        result ~= "    source_only = True,";
+    result ~= "    visibility = [\"//visibility:public\"],";
+    result ~= ")\n";
+    return result.join("\n");
 }
 
 string computeBuildFile(Package package_)
 {
-    import std.file : getcwd;
-    import std.process : Config, execute;
+    bool hasBinary = package_.targets.canFind!(t => t.targetType == TargetType.executable);
+    bool hasLibrary = package_.targets
+        .canFind!(t => [
+                TargetType.library, TargetType.sourceLibrary,
+                TargetType.dynamicLibrary, TargetType.staticLibrary
+            ].canFind(t.targetType));
 
-    if (!package_.archiveFile.exists)
-        package_.download;
+    if (!hasBinary && !hasLibrary)
+        return "";
 
-    if (!package_.unpackPath.exists)
-        package_.unpack;
-
-    auto result = execute([
-        config.dubExecutable,
-        "describe",
-        "--root=%s".format(package_.unpackPath),
-    ]);
-    enforce(result.status == 0, "Failed to describe package %s: %s".format(
-            package_.versionedName, result.output));
-
-    string[] targetDefinitions;
-    bool hasBinary, hasLibrary;
-    auto dub_description = result.output.parseJSON;
-    foreach (target; dub_description["packages"].array)
-    {
-        switch (target["targetType"].str)
-        {
-        case "executable":
-            targetDefinitions ~= binary_definition(target);
-            hasBinary = true;
-            break;
-        case "library":
-            targetDefinitions ~= library_definition(target);
-            hasLibrary = true;
-            break;
-        default:
-            enforce(false, "Unsupported target type %s in package %s.".format(
-                    target["targetType"], package_.versionedName));
-        }
-    }
-    return header_definition(hasBinary, hasLibrary) ~ "\n" ~ targetDefinitions.join("\n");
+    return header_definition(hasBinary, hasLibrary) ~ "\n\n" ~
+        package_.targets
+        .map!(t => target_definition(t))
+        .join("\n");
 }
 
 void writeDubSelectionsLockJson(Package[] packages, string filePath)
 {
     JSONValue outputJson;
-    outputJson["_comment"] =
-        format!"This file is auto-generated with `bazel run %s`. Do not edit."(
-            config.bazelGeneratingTarget);
+    if (!config.bazelGeneratingTarget.empty)
+        outputJson["_comment"] =
+            format!"This file is auto-generated with `bazel run %s`. Do not edit."(
+                config.bazelGeneratingTarget);
     outputJson["fileVersion"] = 1;
-    outputJson["packages"] = JSONValue(
-        packages
-            .map!(p => tuple(p.name, JSONValue([
-                    "buildFileContent": p.buildFileContent,
-                    "integrity": p.integrity,
-                    "url": p.url,
-                    "version": p.version_,
-                ])))
-        .assocArray);
+    outputJson["packages"] = packages.map!(p => tuple(p.name, (
+            p.buildFileContent.empty ? [] : [
+                tuple("buildFileContent", p.buildFileContent)
+            ] ~ [
+                tuple("integrity", p.integrity),
+                tuple("url", p.url),
+                tuple("version", p.version_),
+            ]).assocArray)).assocArray;
     (outputJson
             .toPrettyString(JSONOptions.doNotEscapeSlashes)
             .replace("    ", "  ") ~ "\n")
@@ -262,11 +334,6 @@ int main(string[] args)
             parseArgs.options);
         return 0;
     }
-    if (bazelGeneratingTarget.empty)
-    {
-        writeln("The --bazel_generating_target option must be specified.");
-        return 1;
-    }
     if (!inputFilePath.exists || !inputFilePath.isFile)
     {
         writefln("Input file path %s does not exist or is not a file.", inputFilePath);
@@ -277,7 +344,6 @@ int main(string[] args)
         writefln("Output file %s is not a file.", outputFilePath);
         return 1;
     }
-
     if (cachePath.empty)
     {
         cachePath = buildNormalizedPath(tempDir, "__dub_selection_cache__");
@@ -291,6 +357,7 @@ int main(string[] args)
 
     auto packages = readDubSelectionsJson(inputFilePath);
     packages.each!((ref p) => p.integrity = computePackageIntegrity(p));
+    packages.each!((ref p) => p.targets = describePackage(p));
     packages.each!((ref p) => p.buildFileContent = computeBuildFile(p));
 
     writeDubSelectionsLockJson(packages, outputFilePath);
