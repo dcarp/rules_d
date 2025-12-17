@@ -187,7 +187,7 @@
   "moduleExtensions": {
     "//dub:extensions.bzl%dub": {
       "general": {
-        "bzlTransitiveDigest": "YqgX4gy/oG0iQx61SBwszdunpLk1nHI+VMvIQrCiLbI=",
+        "bzlTransitiveDigest": "ePHr9u4hmGG3C7O4xXy1DkTNUhPBSQlYrDRMm2DcUTI=",
         "usagesDigest": "PFGHuF6r4qRRtUCIV4WWhCbcaBk2gQfrKrbQgavZeEg=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},

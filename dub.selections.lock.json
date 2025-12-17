@@ -3,10 +3,9 @@
   "fileVersion": 1,
   "packages": {
     "semver": {
-      "buildFileContent": "load(\"@rules_d//d:defs.bzl\", \"d_library\")\n\nd_library(\n  name=\"semver\",\n  srcs=[\"source/semver.d\"],\n  imports=[\"source/\"],\n  visibility=[\"//visibility:public\"],\n)\n",
-      "integrity": "sha256-7ZUGQ1Zfv4vd722Vf9rOzN53AK2XR1cZ6fuaLbkASQE=",
-      "url": "https://code.dlang.org/packages/semver/0.6.0.zip",
-      "version": "0.6.0"
+      "integrity": "sha256-Tn9JsqvVNYeeOxYs2+Sl3niity1vxpou3haVdTctS7Y=",
+      "url": "https://code.dlang.org/packages/semver/0.7.1.zip",
+      "version": "0.7.1"
     }
   }
 }

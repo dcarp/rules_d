@@ -14,4 +14,5 @@ def register_package(repository_ctx, package):
         stripPrefix = "{}-{}".format(package["name"], package["version"]),
         output = package["name"],
     )
-    repository_ctx.file(package["name"] + "/BUILD.bazel", package["buildFileContent"], executable = False)
+    if "buildFileContent" in package:
+        repository_ctx.file(package["name"] + "/BUILD.bazel", package["buildFileContent"], executable = False)
