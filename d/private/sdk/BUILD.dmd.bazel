@@ -73,6 +73,15 @@ filegroup(
 
 cc_import(
     name = "libphobos",
+    linkopts = select({
+        "@platforms//os:linux": [
+            "-ldl",
+            "-lm",
+            "-lpthread",
+        ],
+        "@platforms//os:macos": [],
+        "@platforms//os:windows": [],
+    }),
     static_library = select({
         "@platforms//os:linux": "linux/lib64/libphobos2.a",
         "@platforms//os:macos": "osx/lib/libphobos2.a",
@@ -95,9 +104,7 @@ d_toolchain(
     dub_tool = ":dub",
     libphobos = ":libphobos",
     linker_flags = select({
-        "@platforms//os:linux": [
-            "-L{D_COMPILER_ROOT}/linux/lib64",
-        ],
+        "@platforms//os:linux": ["-L{D_COMPILER_ROOT}/linux/lib64"],
         "@platforms//os:macos": ["-L{D_COMPILER_ROOT}/osx/lib"],
         "@platforms//os:windows": [
             "/LIBPATH:{D_COMPILER_ROOT}/windows/lib64",

@@ -30,11 +30,31 @@ filegroup(
 
 cc_import(
     name = "druntime",
+    linkopts = select({
+        "@platforms//os:linux": [
+            "-ldl",
+            "-lm",
+            "-lpthread",
+            "-lrt",
+        ],
+        "@platforms//os:macos": [],
+        "@platforms//os:windows": [],
+    }),
     static_library = "lib/libdruntime-ldc.a",
 )
 
 cc_import(
     name = "libphobos",
+    linkopts = select({
+        "@platforms//os:linux": [
+            "-ldl",
+            "-lm",
+            "-lpthread",
+            "-lrt",
+        ],
+        "@platforms//os:macos": [],
+        "@platforms//os:windows": [],
+    }),
     static_library = "lib/libphobos2-ldc.a",
 )
 
