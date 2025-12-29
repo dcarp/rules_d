@@ -161,6 +161,25 @@
   },
   "selectedYankedVersions": {},
   "moduleExtensions": {
+    "//dub:extensions.bzl%dub": {
+      "general": {
+        "bzlTransitiveDigest": "YqgX4gy/oG0iQx61SBwszdunpLk1nHI+VMvIQrCiLbI=",
+        "usagesDigest": "PFGHuF6r4qRRtUCIV4WWhCbcaBk2gQfrKrbQgavZeEg=",
+        "recordedFileInputs": {},
+        "recordedDirentsInputs": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "dub": {
+            "bzlFile": "@@//dub:extensions.bzl",
+            "ruleClassName": "dub_repository",
+            "attributes": {
+              "dub_selections_lock": "@@//:dub.selections.lock.json"
+            }
+          }
+        },
+        "recordedRepoMappingEntries": []
+      }
+    },
     "@@pybind11_bazel~//:internal_configure.bzl%internal_configure_extension": {
       "general": {
         "bzlTransitiveDigest": "ITysE3qT9ee8ipAmrQmkGImmq2UkzlEY/ZI2L3+wmI8=",
