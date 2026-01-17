@@ -26,3 +26,9 @@ d.toolchain(d_version = "ldc-1.41.0")
 use_repo(d, "d_toolchains")
 
 register_toolchains("@d_toolchains//:all")
+
+dub = use_extension("@rules_d//dub:extensions.bzl", "dub")
+dub.from_dub_selections(
+    dub_selections_lock = "//:dub.selections.lock.json",
+)
+use_repo(dub, "dub")

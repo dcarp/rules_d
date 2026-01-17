@@ -1,0 +1,12 @@
+{
+  "_comment": "This file is auto-generated with `bazel run //:dub_dependencies.update`. Do not edit.",
+  "fileVersion": 1,
+  "packages": {
+    "semver": {
+      "buildFileContent": "load(\"@rules_d//d:defs.bzl\", \"d_library\")\n\nd_library(\n  name = \"semver\",\n  srcs = [\"source/semver.d\"],\n  imports = [\"source\"],\n  visibility = [\"//visibility:public\"],\n)\n",
+      "integrity": "sha256-7ZUGQ1Zfv4vd722Vf9rOzN53AK2XR1cZ6fuaLbkASQE=",
+      "url": "https://code.dlang.org/packages/semver/0.6.0.zip",
+      "version": "0.6.0"
+    }
+  }
+}

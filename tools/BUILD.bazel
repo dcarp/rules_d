@@ -1,6 +1,8 @@
 load("@bazel_gazelle//:def.bzl", "gazelle", "gazelle_binary")
+load("@bazel_lib//:bzl_library.bzl", "bzl_library")
 load("@bazelrc-preset.bzl", "bazelrc_preset")
 load("@rules_d//d:defs.bzl", "d_binary", "d_library")
+load("@rules_d//tools:d_tool.bzl", "d_tool")
 
 bazelrc_preset(
     name = "preset",
@@ -36,4 +38,28 @@ d_binary(
         "generate_compiler_versions_bzl.d",
     ],
     deps = [":d_utils"],
+)
+
+d_tool(
+    name = "dc",
+    visibility = ["//visibility:public"],
+    which = "dc",
+)
+
+d_tool(
+    name = "dub",
+    visibility = ["//visibility:public"],
+    which = "dub",
+)
+
+d_tool(
+    name = "rdmd",
+    visibility = ["//visibility:public"],
+    which = "rdmd",
+)
+
+bzl_library(
+    name = "d_tool",
+    srcs = ["d_tool.bzl"],
+    visibility = ["//visibility:public"],
 )

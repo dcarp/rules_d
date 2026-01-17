@@ -104,8 +104,14 @@ d_toolchain(
     dub_tool = ":dub",
     libphobos = ":libphobos",
     linker_flags = select({
-        "@platforms//os:linux": ["-L{D_COMPILER_ROOT}/linux/lib64"],
-        "@platforms//os:macos": ["-L{D_COMPILER_ROOT}/osx/lib"],
+        "@platforms//os:linux": [
+            "-L{D_COMPILER_ROOT}/linux/lib64",
+            "-Wl,--no-gc-sections",
+        ],
+        "@platforms//os:macos": [
+            "-L{D_COMPILER_ROOT}/osx/lib",
+            "-Wl,-no_gc_sections",
+        ],
         "@platforms//os:windows": [
             "/LIBPATH:{D_COMPILER_ROOT}/windows/lib64",
             "/NODEFAULTLIB:libcmt",
