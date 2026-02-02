@@ -45,11 +45,6 @@ repos:
     rev: v0.21.0
     hooks:
       - id: yamlfmt
-        exclude: |
-          (?x)^(
-            .bcr/config.yml
-            |.github/workflows/bazel-.*-patched\.yaml
-          )
   - repo: https://github.com/crate-ci/typos
     rev: v1.43.0
     hooks:
