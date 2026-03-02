@@ -13,7 +13,7 @@ import std.string : assumeUTF, endsWith, startsWith, strip;
 import std.stdio : File, toFile;
 import std.typecons : tuple;
 
-import tools.integrity_hash : computeIntegrityHash;
+import integrity_hash : computeIntegrityHash;
 
 struct Config
 {
@@ -84,7 +84,7 @@ Package[] readDubSelectionsJson(string filePath)
 
 void download(Package package_)
 {
-    import tools.curl_downloader : CurlDownloader;
+    import curl_downloader : CurlDownloader;
 
     CurlDownloader downloader;
     downloader.downloadToFile(package_.url, package_.archiveFile);

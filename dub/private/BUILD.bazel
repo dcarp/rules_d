@@ -1,8 +1,22 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@rules_d//d:defs.bzl", "d_library")
 
 bzl_library(
     name = "packages",
     srcs = ["packages.bzl"],
     visibility = ["//dub:__subpackages__"],
     deps = ["@bazel_skylib//lib:paths"],
+)
+
+d_library(
+    name = "d_utils",
+    srcs = [
+        "curl_downloader.d",
+        "integrity_hash.d",
+    ],
+    visibility = [
+        "//dub:__subpackages__",
+        "//tools:__subpackages__",
+    ],
+    deps = ["@curl"],
 )

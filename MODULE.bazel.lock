@@ -187,25 +187,6 @@
   },
   "selectedYankedVersions": {},
   "moduleExtensions": {
-    "//dub:extensions.bzl%dub": {
-      "general": {
-        "bzlTransitiveDigest": "ePHr9u4hmGG3C7O4xXy1DkTNUhPBSQlYrDRMm2DcUTI=",
-        "usagesDigest": "PFGHuF6r4qRRtUCIV4WWhCbcaBk2gQfrKrbQgavZeEg=",
-        "recordedFileInputs": {},
-        "recordedDirentsInputs": {},
-        "envVariables": {},
-        "generatedRepoSpecs": {
-          "dub": {
-            "bzlFile": "@@//dub:extensions.bzl",
-            "ruleClassName": "dub_repository",
-            "attributes": {
-              "dub_selections_lock": "@@//:dub.selections.lock.json"
-            }
-          }
-        },
-        "recordedRepoMappingEntries": []
-      }
-    },
     "@@rules_kotlin~//src/main/starlark/core/repositories:bzlmod_setup.bzl%rules_kotlin_extensions": {
       "general": {
         "bzlTransitiveDigest": "eecmTsmdIQveoA97hPtH3/Ej/kugbdCI24bhXIXaly8=",
