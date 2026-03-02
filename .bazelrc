@@ -27,7 +27,7 @@ startup --windows_enable_symlinks
 common --incompatible_autoload_externally=
 
 # Allows tests to run bazelisk-in-bazel, since this is the cache folder used
-common:ci --disk_cache=~/.cache/bazel
+common:ci --disk_cache=~/.cache/bazel-disk-cache
 test:ci --test_env=XDG_CACHE_HOME
 
 # Load user-specific settings, if any
