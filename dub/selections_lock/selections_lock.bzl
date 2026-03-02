@@ -30,10 +30,10 @@ def dub_lock_dependencies(
         kwargs["tags"].append("local")
     run_binary(
         name = name,
-        tool = "//dub/selections_lock:generate_selections_lock",
+        tool = "@rules_d//dub/selections_lock:generate_selections_lock",
         srcs = [
             src,
-            "//tools:dub",
+            "@rules_d//d:dub",
         ],
         args = [
             "--bazel_generating_target=//{}:{}".format(native.package_name(), update_target_name),
@@ -41,7 +41,7 @@ def dub_lock_dependencies(
             "--output=$(location {})".format(out_file),
         ],
         env = {
-            "DUB": "$(location //tools:dub)",
+            "DUB": "$(location @rules_d//d:dub)",
         },
         outs = [out_file],
         progress_message = "Generating dub selections lock file...",
