@@ -83,8 +83,13 @@ compatibility_proxy_repo()
 # Alternatively, you can skip calling this function, so long as you've
 # already fetched all the dependencies.
 load("@rules_d//d:repositories.bzl", "d_register_toolchains", "rules_d_dependencies")
+load("@rules_d//dub:repositories.bzl", "d_register_dub_repository")
 
 rules_d_dependencies()
+
+d_register_dub_repository(
+    dub_selections_lock = "//:dub.selections.lock.json",
+)
 
 d_register_toolchains(
     "dmd_toolchain",
