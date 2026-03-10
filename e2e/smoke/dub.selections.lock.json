@@ -1,0 +1,11 @@
+{
+  "_comment": "This file is auto-generated with `bazel run //:dub_dependencies.update`. Do not edit.",
+  "fileVersion": 1,
+  "packages": {
+    "semver": {
+      "integrity": "sha256-Tn9JsqvVNYeeOxYs2+Sl3niity1vxpou3haVdTctS7Y=",
+      "url": "https://code.dlang.org/packages/semver/0.7.1.zip",
+      "version": "0.7.1"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 load("@bazel_gazelle//:def.bzl", "gazelle", "gazelle_binary")
 load("@bazelrc-preset.bzl", "bazelrc_preset")
-load("@rules_d//d:defs.bzl", "d_binary", "d_library")
+load("@rules_d//d:defs.bzl", "d_binary")
 
 bazelrc_preset(
     name = "preset",
@@ -20,20 +20,10 @@ gazelle(
     gazelle = "gazelle_bin",
 )
 
-d_library(
-    name = "d_utils",
-    srcs = [
-        "curl_downloader.d",
-        "integrity_hash.d",
-    ],
-    visibility = ["//dub:__subpackages__"],
-    deps = ["@curl"],
-)
-
 d_binary(
     name = "generate_compiler_versions_bzl",
     srcs = [
         "generate_compiler_versions_bzl.d",
     ],
-    deps = [":d_utils"],
+    deps = ["//dub/private:d_utils"],
 )

@@ -1,10 +1,18 @@
 """Provides a simple way to test your rules as an external workspace."""
 
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
+load("@rules_d//dub:defs.bzl", "dub_lock_dependencies")
 
 build_test(
     name = "smoke_test",
     targets = [
         "//tests/std_lib:fiber_thread_usage",
     ],
+)
+
+dub_lock_dependencies(
+    name = "dub_dependencies",
+    src = "dub.selections.json",
+    dub_selections_lock = "dub.selections.lock.json",
+    tags = ["manual"],
 )
