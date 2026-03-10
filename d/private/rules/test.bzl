@@ -10,7 +10,7 @@ def _d_test_impl(ctx):
     d_info = compilation_action(ctx, target_type = TARGET_TYPE.TEST)
     output = link_action(ctx, d_info)
     env_with_expansions = {
-        k: expand_variables(ctx, ctx.expand_location(v, ctx.files.data), [output], "env")
+        k: expand_variables(ctx, ctx.expand_location(v, ctx.attr.data), [output], "env")
         for k, v in ctx.attr.env.items()
     }
     return [

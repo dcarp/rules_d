@@ -91,11 +91,11 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
     args = ctx.actions.args()
     args.add_all(COMPILATION_MODE_FLAGS[ctx.var["COMPILATION_MODE"]])
     args.add_all(ctx.files.srcs)
-    args.add_all(imports.to_list(), format_each = "-I=%s")
-    args.add_all(string_imports.to_list(), format_each = "-J=%s")
+    args.add_all([i for i in imports.to_list() if i], format_each = "-I=%s")
+    args.add_all([si for si in string_imports.to_list() if si], format_each = "-J=%s")
     args.add_all(toolchain.compiler_flags)
     args.add_all(compiler_flags.to_list())
-    args.add_all(versions.to_list(), format_each = "-version=%s")
+    args.add_all([v for v in versions.to_list() if v], format_each = "-version=%s")
     output = None
     if target_type == TARGET_TYPE.TEST:
         args.add_all(["-main", "-unittest"])
