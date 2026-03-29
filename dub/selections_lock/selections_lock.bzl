@@ -8,6 +8,7 @@ def dub_lock_dependencies(
         name,
         src = None,
         dub_selections_lock = None,
+        skip_ssl_verification = False,
         **kwargs):
     """Generates a dub dependencies lock file suitable for bazel use.
 
@@ -18,6 +19,7 @@ def dub_lock_dependencies(
             * dub.json
             * dub.selections.json
         dub_selections_lock: The output lock file. If not specified, defaults to `{name}.lock.json`.
+        skip_ssl_verification: If true, SSL certificate verification will be skipped when downloading dependencies. Use with caution!
         **kwargs: Additional keyword arguments passed to the `_test` rule.
     """
     update_target_name = name + ".update"
@@ -39,6 +41,7 @@ def dub_lock_dependencies(
             "--bazel_generating_target=//{}:{}".format(native.package_name(), update_target_name),
             "--input=$(location {})".format(src),
             "--output=$(location {})".format(out_file),
+            "--skip_ssl_verification={}".format(skip_ssl_verification),
         ],
         env = {
             "DUB": "$(location @rules_d//d:dub)",

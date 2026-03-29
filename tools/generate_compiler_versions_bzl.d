@@ -161,9 +161,9 @@ auto getLdcReleases(int lookbackYears, string githubToken)
     int cutoffYear = Clock.currTime.year - lookbackYears;
     writefln("Getting LDC compiler releases since %s...", cutoffYear);
 
-    auto downloader = CurlDownloader();
+    auto downloader = CurlDownloader(githubToken);
     string response = downloader
-        .get(format!"%s/%s/releases?per_page=1000"(GITHUB_API_URL, GITHUB_LDC_REPO), githubToken)
+        .get(format!"%s/%s/releases?per_page=1000"(GITHUB_API_URL, GITHUB_LDC_REPO))
         .assumeUTF;
 
     auto releases = parseJSON(response);
