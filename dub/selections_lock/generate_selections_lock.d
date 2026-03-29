@@ -4,14 +4,14 @@ import std.algorithm : canFind, each, filter, map;
 import std.array : array, assocArray, replace;
 import std.conv : to;
 import std.exception : enforce;
-import std.file : exists, isFile, mkdirRecurse, read, readText, rmdirRecurse, tempDir;
+import std.file : exists, getSize, isFile, mkdirRecurse, read, readText, rmdirRecurse, tempDir;
 import std.format : format;
 import std.json : parseJSON, JSONOptions, JSONType, JSONValue;
 import std.path : baseName, buildNormalizedPath, relativePath;
 import std.range : empty, join;
 import std.string : assumeUTF, endsWith, startsWith, strip;
 import std.stdio : File, toFile;
-import std.typecons : tuple;
+import std.typecons : Flag, tuple;
 
 import integrity_hash : computeIntegrityHash;
 
@@ -21,11 +21,12 @@ struct Config
     string cachePath;
     string dubExecutable;
     enum string dubRegistryUrl = "https://code.dlang.org/packages";
+    Flag!"SkipSSLVerification" skipSSLVerification;
 }
 
 __gshared Config _config;
 
-void setConfig(string bazelGeneratingTarget, string cachePath, string dubExecutable)
+void setConfig(string bazelGeneratingTarget, string cachePath, string dubExecutable, Flag!"SkipSSLVerification" skipSSLVerification)
 {
     if (!bazelGeneratingTarget.empty)
         _config.bazelGeneratingTarget = bazelGeneratingTarget;
@@ -33,6 +34,7 @@ void setConfig(string bazelGeneratingTarget, string cachePath, string dubExecuta
         _config.cachePath = cachePath;
     if (!dubExecutable.empty)
         _config.dubExecutable = dubExecutable;
+    _config.skipSSLVerification = skipSSLVerification;
 }
 
 auto config()
@@ -86,13 +88,13 @@ void download(Package package_)
 {
     import curl_downloader : CurlDownloader;
 
-    CurlDownloader downloader;
+    auto downloader = CurlDownloader(config.skipSSLVerification);
     downloader.downloadToFile(package_.url, package_.archiveFile);
 }
 
 string computePackageIntegrity(Package package_)
 {
-    if (!package_.archiveFile.exists)
+    if (!package_.archiveFile.exists || package_.archiveFile.getSize == 0)
         package_.download;
     return computeIntegrityHash!256(package_.archiveFile);
 }
@@ -318,6 +320,7 @@ int main(string[] args)
     string dub;
     string inputFilePath;
     string outputFilePath;
+    bool skipSSLVerification;
 
     auto parseArgs = args.getopt(
         "bazel_generating_target|b", "Document the bazel generating target.", &bazelGeneratingTarget,
@@ -325,6 +328,7 @@ int main(string[] args)
         "dub|d", "Path to dub executable.", &dub,
         "input|i", "Input file path. One of dub.json, dub.sdl or, dub.selections.json.", &inputFilePath,
         "output|o", "Output dub.selections.lock.json file path.", &outputFilePath,
+        "skip_ssl_verification|s", "Skip SSL verification when downloading packages.", &skipSSLVerification,
     );
 
     if (parseArgs.helpWanted)
@@ -353,7 +357,7 @@ int main(string[] args)
         dub = environment.get("DUB");
     enforce(!dub.empty, "DUB executable path must be specified via --dub option or DUB environment variable.");
 
-    setConfig(bazelGeneratingTarget, cachePath, dub);
+    setConfig(bazelGeneratingTarget, cachePath, dub, skipSSLVerification.to!(Flag!"SkipSSLVerification"));
 
     auto packages = readDubSelectionsJson(inputFilePath);
     packages.each!((ref p) => p.integrity = computePackageIntegrity(p));

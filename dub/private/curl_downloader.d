@@ -8,6 +8,7 @@ import std.format : format;
 import std.range : empty;
 import std.stdio : File;
 import std.string : toStringz;
+import std.typecons : Flag, No;
 
 class CurlException : Exception
 {
@@ -19,7 +20,7 @@ class CurlException : Exception
 
 struct CurlDownloader
 {
-    ubyte[] get(string url, string githubToken = "")
+    ubyte[] get(string url)
     {
         Buffer buffer;
         curl_slist* headers = setHeaders(githubToken);
@@ -38,12 +39,12 @@ struct CurlDownloader
         return buffer.data;
     }
 
-    void downloadToFile(string url, string filePath, string githubToken = "")
+    void downloadToFile(string url, string filePath)
     {
-        downloadToFile(url, File(filePath, "wb+"), githubToken);
+        downloadToFile(url, File(filePath, "wb+"));
     }
 
-    void downloadToFile(string url, File file, string githubToken = "")
+    void downloadToFile(string url, File file)
     {
         enforce(file.isOpen, "Failed to open file %s for writing.".format(file.name));
 
@@ -60,6 +61,18 @@ struct CurlDownloader
         auto result = curl_easy_perform(curl);
         enforce(result == CurlError.ok, new CurlException("Downloading '%s' failed: %s".format(url, curl_easy_strerror(
                 result).to!string)));
+    }
+
+    this(string githubToken, Flag!"SkipSSLVerification" skipSSLVerification = No.SkipSSLVerification)
+    {
+        this.githubToken = githubToken;
+        this.skipSSLVerification = skipSSLVerification;
+    }
+
+    this(Flag!"SkipSSLVerification" skipSSLVerification)
+    {
+        this.githubToken = "";
+        this.skipSSLVerification = skipSSLVerification;
     }
 
 private:
@@ -104,6 +117,11 @@ private:
         curl_easy_setopt(curl, CurlOption.connecttimeout, 10L); // 10 seconds connection timeout
         curl_easy_setopt(curl, CurlOption.timeout, 600L); // 10 minutes
         curl_easy_setopt(curl, CurlOption.failonerror, 1L); // fail on HTTP errors
+        if (skipSSLVerification)
+        {
+            curl_easy_setopt(curl, CurlOption.ssl_verifypeer, 0L); // disable SSL peer verification
+            curl_easy_setopt(curl, CurlOption.ssl_verifyhost, 0L); // disable SSL host verification
+        }
     }
 
     extern (C) static size_t get_callback(void* content, size_t size, size_t nmemb, void* bufferPtr)
@@ -121,4 +139,7 @@ private:
         file.rawWrite((cast(const(ubyte)*) content)[0 .. contentSize]);
         return contentSize;
     }
+
+    string githubToken;
+    Flag!"SkipSSLVerification" skipSSLVerification;
 }
