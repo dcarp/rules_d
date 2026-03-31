@@ -23,7 +23,7 @@ common_attrs = {
     ),
     "deps": attr.label_list(doc = "List of dependencies.", providers = [[CcInfo], [DInfo]]),
     "dopts": attr.string_list(doc = "Compiler flags."),
-    "imports": attr.string_list(doc = "List of import paths."),
+    "imports": attr.string_list(doc = "List of import paths. Default is the package directory."),
     "linkopts": attr.string_list(doc = "Linker flags passed via -L flags."),
     "string_imports": attr.string_list(doc = "List of string import paths."),
     "string_srcs": attr.label_list(doc = "List of string import source files."),
@@ -146,8 +146,7 @@ def compilation_action(ctx, target_type = TARGET_TYPE.LIBRARY):
         compilation_output = output,
         compiler_flags = compiler_flags,
         imports = depset(
-            [paths.join(ctx.label.workspace_root, ctx.label.package)] +
-            [paths.join(ctx.label.workspace_root, ctx.label.package, imp) for imp in ctx.attr.imports],
+            [paths.join(ctx.label.workspace_root, ctx.label.package, imp) for imp in ctx.attr.imports] if ctx.attr.imports else [paths.join(ctx.label.workspace_root, ctx.label.package)],
             transitive = [d.imports for d in d_deps],
         ),
         interface_srcs = depset(

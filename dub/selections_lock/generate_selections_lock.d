@@ -1,6 +1,6 @@
 module dub.selections_lock.generate_selections_lock;
 
-import std.algorithm : canFind, each, filter, map;
+import std.algorithm : canFind, each, filter, map, startsWith;
 import std.array : array, assocArray, replace;
 import std.conv : to;
 import std.exception : enforce;
@@ -9,7 +9,7 @@ import std.format : format;
 import std.json : parseJSON, JSONOptions, JSONType, JSONValue;
 import std.path : baseName, buildNormalizedPath, relativePath;
 import std.range : empty, join;
-import std.string : assumeUTF, endsWith, startsWith, strip;
+import std.string : assumeUTF, endsWith, startsWith, stripRight;
 import std.stdio : File, toFile;
 import std.typecons : Flag, tuple;
 
@@ -22,11 +22,13 @@ struct Config
     string dubExecutable;
     enum string dubRegistryUrl = "https://code.dlang.org/packages";
     Flag!"SkipSSLVerification" skipSSLVerification;
+    Flag!"Verbose" verbose;
 }
 
 __gshared Config _config;
 
-void setConfig(string bazelGeneratingTarget, string cachePath, string dubExecutable, Flag!"SkipSSLVerification" skipSSLVerification)
+void setConfig(string bazelGeneratingTarget, string cachePath, string dubExecutable,
+    Flag!"SkipSSLVerification" skipSSLVerification, Flag!"Verbose" verbose)
 {
     if (!bazelGeneratingTarget.empty)
         _config.bazelGeneratingTarget = bazelGeneratingTarget;
@@ -35,6 +37,7 @@ void setConfig(string bazelGeneratingTarget, string cachePath, string dubExecuta
     if (!dubExecutable.empty)
         _config.dubExecutable = dubExecutable;
     _config.skipSSLVerification = skipSSLVerification;
+    _config.verbose = verbose;
 }
 
 auto config()
@@ -160,11 +163,22 @@ struct Target
     string[string] environments;
     string[string] buildEnvironments;
     string[string] runEnvironments;
+    string[] dependencies;
 }
 
-Target parseTarget(JSONValue json)
+string[] relativePaths(JSONValue paths, string packagePath)
+{
+    return paths
+        .array
+        .map!(p => p.str.relativePath(packagePath).stripRight("/"))
+        .filter!(p => !p.startsWith("../"))
+        .array;
+}
+
+Target parseTarget(JSONValue json, string packagePath)
 {
     Target target;
+    target.dependencies = json["dependencies"].array.map!(v => v.str).array;
     json = json["buildSettings"].object;
     target.targetName = json["targetName"].str;
     enforce([JSONType.integer, JSONType.string].canFind(json["targetType"].type), "Invalid targetType JSON type.");
@@ -177,17 +191,12 @@ Target parseTarget(JSONValue json)
     target.dflags = json["dflags"].array.map!(v => v.str).array;
     target.lflags = json["lflags"].array.map!(v => v.str).array;
     target.libs = json["libs"].array.map!(v => v.str).array;
-    target.sourceFiles = json["sourceFiles"].array
-        .map!(v => v.str.relativePath(target.targetPath)).array;
-    target.injectSourceFiles = json["injectSourceFiles"].array
-        .map!(v => v.str.relativePath(target.targetPath)).array;
+    target.sourceFiles = json["sourceFiles"].relativePaths(packagePath);
+    target.injectSourceFiles = json["injectSourceFiles"].relativePaths(packagePath);
     target.versions = json["versions"].array.map!(v => v.str).array;
-    target.importPaths = json["importPaths"].array
-        .map!(v => v.str.relativePath(target.targetPath).strip("", "/")).array;
-    target.stringImportPaths = json["stringImportPaths"].array
-        .map!(v => v.str.relativePath(target.targetPath).strip("", "/")).array;
-    target.stringSrcs = json["stringImportFiles"].array
-        .map!(v => v.str.relativePath(target.targetPath)).array;
+    target.importPaths = json["importPaths"].relativePaths(packagePath);
+    target.stringImportPaths = json["stringImportPaths"].relativePaths(packagePath);
+    target.stringSrcs = json["stringImportFiles"].relativePaths(packagePath);
     target.environments = json["environments"].object.byKeyValue
         .map!(env => tuple(env.key, env.value.str)).assocArray;
     target.buildEnvironments = json["buildEnvironments"].object.byKeyValue
@@ -222,7 +231,16 @@ Target[] describePackage(Package package_)
             package_.versionedName, result.output));
 
     auto dub_description = result.output.parseJSON;
-    return dub_description["targets"].array.map!(t => parseTarget(t)).array;
+    if (config.verbose)
+    {
+        import std.stdio : writeln;
+        writeln("Dub description for package ", package_.versionedName, ":\n",
+            dub_description.toPrettyString(JSONOptions.doNotEscapeSlashes));
+    }
+    return dub_description["targets"].array
+        .filter!(t => t["packages"].array.canFind(dub_description["rootPackage"]))
+        .map!(t => parseTarget(t, package_.unpackPath))
+        .array;
 }
 
 string header_definition(bool hasBinary, bool hasLibrary)
@@ -265,6 +283,10 @@ string target_definition(Target target)
     if (target.targetType == TargetType.sourceLibrary)
         result ~= "    source_only = True,";
     result ~= "    visibility = [\"//visibility:public\"],";
+    if (!target.dependencies.empty)
+        result ~= "    deps = [%s],".format(
+            target.dependencies
+                .map!(d => "\"@%DUB_REPOSITORY_NAME%//" ~ d ~ "\"").join(", "));
     result ~= ")\n";
     return result.join("\n");
 }
@@ -281,10 +303,16 @@ string computeBuildFile(Package package_)
     if (!hasBinary && !hasLibrary)
         return "";
 
-    return header_definition(hasBinary, hasLibrary) ~ "\n\n" ~
+    auto buildFileContent = header_definition(hasBinary, hasLibrary) ~ "\n\n" ~
         package_.targets
         .map!(t => target_definition(t))
         .join("\n");
+    if (config.verbose)
+    {
+        import std.stdio : writeln;
+        writeln("Generated BUILD file content for package ", package_.versionedName, ":\n", buildFileContent);
+    }
+    return buildFileContent;
 }
 
 void writeDubSelectionsLockJson(Package[] packages, string filePath)
@@ -321,6 +349,7 @@ int main(string[] args)
     string inputFilePath;
     string outputFilePath;
     bool skipSSLVerification;
+    bool verbose;
 
     auto parseArgs = args.getopt(
         "bazel_generating_target|b", "Document the bazel generating target.", &bazelGeneratingTarget,
@@ -329,6 +358,7 @@ int main(string[] args)
         "input|i", "Input file path. One of dub.json, dub.sdl or, dub.selections.json.", &inputFilePath,
         "output|o", "Output dub.selections.lock.json file path.", &outputFilePath,
         "skip_ssl_verification|s", "Skip SSL verification when downloading packages.", &skipSSLVerification,
+        "verbose|v", "Enable verbose output.", &verbose,
     );
 
     if (parseArgs.helpWanted)
@@ -357,7 +387,8 @@ int main(string[] args)
         dub = environment.get("DUB");
     enforce(!dub.empty, "DUB executable path must be specified via --dub option or DUB environment variable.");
 
-    setConfig(bazelGeneratingTarget, cachePath, dub, skipSSLVerification.to!(Flag!"SkipSSLVerification"));
+    setConfig(bazelGeneratingTarget, cachePath, dub, skipSSLVerification.to!(Flag!"SkipSSLVerification"),
+        verbose.to!(Flag!"Verbose"));
 
     auto packages = readDubSelectionsJson(inputFilePath);
     packages.each!((ref p) => p.integrity = computePackageIntegrity(p));
