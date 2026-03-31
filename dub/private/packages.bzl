@@ -15,4 +15,4 @@ def register_package(repository_ctx, package):
         output = package["name"],
     )
     if "buildFileContent" in package:
-        repository_ctx.file(package["name"] + "/BUILD.bazel", package["buildFileContent"], executable = False)
+        repository_ctx.file(package["name"] + "/BUILD.bazel", package["buildFileContent"].replace("%DUB_REPOSITORY_NAME%", repository_ctx.original_name), executable = False)
