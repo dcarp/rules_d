@@ -72,6 +72,15 @@ load("@rules_cc//cc:extensions.bzl", "compatibility_proxy_repo")
 
 compatibility_proxy_repo()
 
+http_archive(
+    name = "platforms",
+    sha256 = "3384eb1c30762704fbe38e440204e114154086c8fc8a8c2e3e28441028c019a8",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/1.0.0/platforms-1.0.0.tar.gz",
+        "https://github.com/bazelbuild/platforms/releases/download/1.0.0/platforms-1.0.0.tar.gz",
+    ],
+)
+
 #---SNIP--- Below here is re-used in the workspace snippet published on releases
 
 ######################

@@ -2,12 +2,11 @@
 
 import etc.c.curl;
 import std.algorithm : each;
-import std.conv : to;
 import std.exception : enforce;
 import std.format : format;
 import std.range : empty;
 import std.stdio : File;
-import std.string : toStringz;
+import std.string : fromStringz, toStringz;
 import std.typecons : Flag, No;
 
 class CurlException : Exception
@@ -26,16 +25,17 @@ struct CurlDownloader
         curl_slist* headers = setHeaders(githubToken);
         CURL* curl = curl_easy_init();
         enforce(curl, new CurlException("Failed to initialize curl."));
+        char[CURL_ERROR_SIZE] errorBuffer;
         scope (exit)
         {
             curl_slist_free_all(headers);
             curl_easy_cleanup(curl);
         }
-        setOptions(curl, url, headers, &get_callback, &buffer);
+        setOptions(curl, url, headers, &get_callback, &buffer, errorBuffer);
 
         auto result = curl_easy_perform(curl);
-        enforce(result == CurlError.ok, new CurlException("Get from '%s' failed: %s".format(url, curl_easy_strerror(
-                result).to!string)));
+        enforce(result == CurlError.ok, new CurlException("Get from '%s' failed: %s: %s".format(url,
+                curl_easy_strerror(result).fromStringz, errorBuffer.fromStringz)));
         return buffer.data;
     }
 
@@ -51,16 +51,17 @@ struct CurlDownloader
         CURL* curl = curl_easy_init();
         enforce(curl, new CurlException("Failed to initialize curl."));
         curl_slist* headers = setHeaders(githubToken);
+        char[CURL_ERROR_SIZE] errorBuffer;
         scope (exit)
         {
             curl_slist_free_all(headers);
             curl_easy_cleanup(curl);
         }
-        setOptions(curl, url, headers, &download_callback, &file);
+        setOptions(curl, url, headers, &download_callback, &file, errorBuffer);
 
         auto result = curl_easy_perform(curl);
-        enforce(result == CurlError.ok, new CurlException("Downloading '%s' failed: %s".format(url, curl_easy_strerror(
-                result).to!string)));
+        enforce(result == CurlError.ok, new CurlException("Downloading '%s' failed: %s: %s".format(url,
+                curl_easy_strerror(result).fromStringz, errorBuffer.fromStringz)));
     }
 
     this(string githubToken, Flag!"SkipSSLVerification" skipSSLVerification = No.SkipSSLVerification)
@@ -106,7 +107,7 @@ private:
         return curl_headers;
     }
 
-    void setOptions(CURL* curl, string url, curl_slist* headers, void* callback, void* callbackData)
+    void setOptions(CURL* curl, string url, curl_slist* headers, void* callback, void* callbackData, char[] errorBuffer)
     {
         curl_easy_setopt(curl, CurlOption.url, url.toStringz);
         curl_easy_setopt(curl, CurlOption.httpheader, headers);
@@ -117,6 +118,7 @@ private:
         curl_easy_setopt(curl, CurlOption.connecttimeout, 10L); // 10 seconds connection timeout
         curl_easy_setopt(curl, CurlOption.timeout, 600L); // 10 minutes
         curl_easy_setopt(curl, CurlOption.failonerror, 1L); // fail on HTTP errors
+        curl_easy_setopt(curl, CurlOption.errorbuffer, errorBuffer.ptr); // disable error buffer to save memory
         if (skipSSLVerification)
         {
             curl_easy_setopt(curl, CurlOption.ssl_verifypeer, 0L); // disable SSL peer verification
