@@ -1,0 +1,9 @@
+load("@rules_d//d:defs.bzl", "d_test")
+
+d_test(
+    name = "transitive_deps_test",
+    srcs = ["events.d"],
+    # restrict to linux to avoid having to deal with dub dependencies that don't support all platforms.
+    target_compatible_with = ["@platforms//os:linux"],
+    deps = ["@dub//asynchronous"],
+)

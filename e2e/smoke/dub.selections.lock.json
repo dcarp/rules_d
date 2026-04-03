@@ -2,6 +2,24 @@
   "_comment": "This file is auto-generated with `bazel run //:dub_dependencies.update`. Do not edit.",
   "fileVersion": 1,
   "packages": {
+    "asynchronous": {
+      "buildFileContent": "load(\"@rules_d//d:defs.bzl\", \"d_library\")\n\nd_library(\n  name = \"asynchronous\",\n  srcs = [\"src/asynchronous/events.d\", \"src/asynchronous/futures.d\", \"src/asynchronous/libasync/events.d\", \"src/asynchronous/locks.d\", \"src/asynchronous/package.d\", \"src/asynchronous/protocols.d\", \"src/asynchronous/queues.d\", \"src/asynchronous/streams.d\", \"src/asynchronous/tasks.d\", \"src/asynchronous/transports.d\", \"src/asynchronous/types.d\"],\n  imports = [\"src\"],\n  visibility = [\"//visibility:public\"],\n  deps = [\"@%DUB_REPOSITORY_NAME%//libasync:async\"],\n)\n",
+      "integrity": "sha256-6j2mM7vdK9DWiLrePUiQJWQR1+E9Z00LKYSaSLivQl0=",
+      "url": "https://code.dlang.org/packages/asynchronous/0.6.9.zip",
+      "version": "0.6.9"
+    },
+    "libasync": {
+      "buildFileContent": "load(\"@rules_d//d:defs.bzl\", \"d_library\")\n\nd_library(\n  name = \"async\",\n  srcs = [\"source/libasync/bufferedtcp.d\", \"source/libasync/dns.d\", \"source/libasync/event.d\", \"source/libasync/events.d\", \"source/libasync/file.d\", \"source/libasync/internals/epoll.d\", \"source/libasync/internals/freelist.d\", \"source/libasync/internals/kqueue.d\", \"source/libasync/internals/logging.d\", \"source/libasync/internals/path.d\", \"source/libasync/internals/queue.d\", \"source/libasync/internals/socket_compat.d\", \"source/libasync/internals/validator.d\", \"source/libasync/internals/win32.d\", \"source/libasync/notifier.d\", \"source/libasync/package.d\", \"source/libasync/posix.d\", \"source/libasync/posix2.d\", \"source/libasync/signal.d\", \"source/libasync/socket.d\", \"source/libasync/tcp.d\", \"source/libasync/test.d\", \"source/libasync/threads.d\", \"source/libasync/timer.d\", \"source/libasync/types.d\", \"source/libasync/udp.d\", \"source/libasync/uds.d\", \"source/libasync/watcher.d\", \"source/libasync/windows.d\"],\n  imports = [\"source\"],\n  visibility = [\"//visibility:public\"],\n  deps = [\"@%DUB_REPOSITORY_NAME%//memutils\"],\n)\n",
+      "integrity": "sha256-6MEf61fewLMGq3zGPrOCvRxJraCgvYujDeLO96+R9ng=",
+      "url": "https://code.dlang.org/packages/libasync/0.9.7.zip",
+      "version": "0.9.7"
+    },
+    "memutils": {
+      "buildFileContent": "load(\"@rules_d//d:defs.bzl\", \"d_library\")\n\nd_library(\n  name = \"memutils\",\n  srcs = [\"source/memutils/all.d\", \"source/memutils/allocators.d\", \"source/memutils/circularbuffer.d\", \"source/memutils/constants.d\", \"source/memutils/cryptosafe.d\", \"source/memutils/debugger.d\", \"source/memutils/dictionarylist.d\", \"source/memutils/freelist.d\", \"source/memutils/hashmap.d\", \"source/memutils/helpers.d\", \"source/memutils/memory.d\", \"source/memutils/pool.d\", \"source/memutils/rbtree.d\", \"source/memutils/refcounted.d\", \"source/memutils/scoped.d\", \"source/memutils/securepool.d\", \"source/memutils/tests.d\", \"source/memutils/unique.d\", \"source/memutils/utils.d\", \"source/memutils/vector.d\"],\n  imports = [\"source\"],\n  visibility = [\"//visibility:public\"],\n)\n",
+      "integrity": "sha256-/7IvdkJDI/3DV8V3Eum2CK87npL1Q5/f9ErFBHZQChk=",
+      "url": "https://code.dlang.org/packages/memutils/1.0.11.zip",
+      "version": "1.0.11"
+    },
     "semver": {
       "integrity": "sha256-Tn9JsqvVNYeeOxYs2+Sl3niity1vxpou3haVdTctS7Y=",
       "url": "https://code.dlang.org/packages/semver/0.7.1.zip",

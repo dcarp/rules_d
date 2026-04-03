@@ -1,6 +1,6 @@
 module dub.selections_lock.generate_selections_lock;
 
-import std.algorithm : canFind, each, filter, map, startsWith;
+import std.algorithm : canFind, each, find, filter, map, startsWith;
 import std.array : array, assocArray, replace;
 import std.conv : to;
 import std.exception : enforce;
@@ -51,6 +51,7 @@ struct Package
     string version_;
     string integrity;
     string buildFileContent;
+    string mainTargetName;
     Target[] targets;
 
     string archiveFile() const
@@ -206,7 +207,7 @@ Target parseTarget(JSONValue json, string packagePath)
     return target;
 }
 
-Target[] describePackage(Package package_)
+Target[] describePackage(Package package_, out string mainTargetName)
 {
     import std.file : getcwd;
     import std.process : Config, execute;
@@ -237,13 +238,30 @@ Target[] describePackage(Package package_)
         writeln("Dub description for package ", package_.versionedName, ":\n",
             dub_description.toPrettyString(JSONOptions.doNotEscapeSlashes));
     }
+    auto rootPackage = dub_description["packages"].array.find!(p => p["name"].str == package_.name);
+    enforce(!rootPackage.empty, "Package %s not found in dub description.".format(package_.versionedName));
+    mainTargetName = rootPackage[0]["targetName"].str;
     return dub_description["targets"].array
         .filter!(t => t["packages"].array.canFind(dub_description["rootPackage"]))
         .map!(t => parseTarget(t, package_.unpackPath))
         .array;
 }
 
-string header_definition(bool hasBinary, bool hasLibrary)
+void expandDependencyTargetNames(ref Package package_, string[string] targetNameByPackage)
+{
+    foreach (ref target; package_.targets)
+    {
+        foreach (ref dep; target.dependencies)
+        {
+            auto targetName = dep in targetNameByPackage;
+            if (targetName is null || *targetName == dep)
+                continue;
+            dep ~= ":" ~ *targetName;
+        }
+    }
+}
+
+string headerDefinition(bool hasBinary, bool hasLibrary)
 {
     if (hasBinary && hasLibrary)
         return `load("@rules_d//d:defs.bzl", "d_binary", "d_library")`;
@@ -254,7 +272,7 @@ string header_definition(bool hasBinary, bool hasLibrary)
     return "";
 }
 
-string target_definition(Target target)
+string targetDefinition(Target target)
 {
     string[] result;
     switch (target.targetType)
@@ -303,9 +321,9 @@ string computeBuildFile(Package package_)
     if (!hasBinary && !hasLibrary)
         return "";
 
-    auto buildFileContent = header_definition(hasBinary, hasLibrary) ~ "\n\n" ~
+    auto buildFileContent = headerDefinition(hasBinary, hasLibrary) ~ "\n\n" ~
         package_.targets
-        .map!(t => target_definition(t))
+        .map!(t => targetDefinition(t))
         .join("\n");
     if (config.verbose)
     {
@@ -392,7 +410,9 @@ int main(string[] args)
 
     auto packages = readDubSelectionsJson(inputFilePath);
     packages.each!((ref p) => p.integrity = computePackageIntegrity(p));
-    packages.each!((ref p) => p.targets = describePackage(p));
+    packages.each!((ref p) => p.targets = describePackage(p, p.mainTargetName));
+    auto targetNameByPackage = packages.map!(p => tuple(p.name, p.mainTargetName)).assocArray;
+    packages.each!((ref p) => p.expandDependencyTargetNames(targetNameByPackage));
     packages.each!((ref p) => p.buildFileContent = computeBuildFile(p));
 
     writeDubSelectionsLockJson(packages, outputFilePath);
