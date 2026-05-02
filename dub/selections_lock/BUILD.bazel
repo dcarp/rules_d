@@ -1,4 +1,5 @@
 load("@bazel_lib//:bzl_library.bzl", "bzl_library")
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
 load("@rules_d//d:defs.bzl", "d_binary")
 
 d_binary(
@@ -21,4 +22,9 @@ bzl_library(
         "@bazel_lib//lib:utils",
         "@bazel_lib//lib:write_source_files",
     ],
+)
+
+build_test(
+    name = "generate_selections_lock_test",
+    targets = [":generate_selections_lock"],
 )
