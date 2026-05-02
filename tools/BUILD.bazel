@@ -1,4 +1,5 @@
 load("@bazel_gazelle//:def.bzl", "gazelle", "gazelle_binary")
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
 load("@bazelrc-preset.bzl", "bazelrc_preset")
 load("@rules_d//d:defs.bzl", "d_binary")
 
@@ -26,4 +27,9 @@ d_binary(
         "generate_compiler_versions_bzl.d",
     ],
     deps = ["//dub/private:d_utils"],
+)
+
+build_test(
+    name = "generate_compiler_versions_bzl_test",
+    targets = [":generate_compiler_versions_bzl"],
 )

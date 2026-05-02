@@ -4,7 +4,7 @@ import std.algorithm : canFind, each, find, filter, map, startsWith;
 import std.array : array, assocArray, replace;
 import std.conv : to;
 import std.exception : enforce;
-import std.file : exists, getSize, isFile, mkdirRecurse, read, readText, rmdirRecurse, tempDir;
+import std.file : copy, exists, getSize, isFile, mkdirRecurse, read, readText, rmdirRecurse, tempDir;
 import std.format : format;
 import std.json : parseJSON, JSONOptions, JSONType, JSONValue;
 import std.path : baseName, buildNormalizedPath, relativePath;
@@ -75,9 +75,9 @@ struct Package
     }
 }
 
-Package[] readDubSelectionsJson(string filePath)
+Package[] parseDubSelectionsJson(string content)
 {
-    auto json = readText(filePath).parseJSON;
+    auto json = content.parseJSON;
     enforce(json.type == JSONType.object, "Expected JSON object at root.");
     enforce(json["fileVersion"].integer == 1, "Unsupported fileVersion, expected 1.");
 
@@ -86,6 +86,56 @@ Package[] readDubSelectionsJson(string filePath)
         .byKeyValue
         .map!(item => Package(item.key, item.value.str))
         .array;
+}
+
+string generateDubSelectionsJson(string manifestFilePath)
+{
+    import std.process : execute;
+
+    auto manifestFileName = manifestFilePath.baseName;
+    auto packagePath = buildNormalizedPath(config.cachePath, "__dub_manifest_root__");
+    if (packagePath.exists)
+        packagePath.rmdirRecurse;
+    packagePath.mkdirRecurse;
+    scope (exit)
+    {
+        if (packagePath.exists)
+            packagePath.rmdirRecurse;
+    }
+
+    auto packageManifestFilePath = buildNormalizedPath(packagePath, manifestFileName);
+    manifestFilePath.copy(packageManifestFilePath);
+
+    auto command = [
+        config.dubExecutable,
+        "upgrade",
+        "--missing-only",
+        "--root=%s".format(packagePath),
+        "--cache=local",
+        config.verbose ? "--verbose": "--quiet",
+    ];
+
+    auto result = execute(command);
+    enforce(result.status == 0, "Failed to generate dub.selections.json from %s: %s".format(
+            manifestFilePath, result.output));
+
+    auto selectionsFilePath = buildNormalizedPath(packagePath, "dub.selections.json");
+    enforce(selectionsFilePath.exists && selectionsFilePath.isFile,
+        "Failed to generate dub.selections.json from %s.".format(manifestFilePath));
+    return selectionsFilePath.readText;
+}
+
+Package[] readDubDependencies(string filePath)
+{
+    auto fileName = filePath.baseName;
+    if (fileName == "dub.selections.json")
+        return filePath.readText.parseDubSelectionsJson;
+    if (fileName == "dub.json" || fileName == "dub.sdl")
+        return filePath.generateDubSelectionsJson.parseDubSelectionsJson;
+
+    enforce(false, "Unsupported input file %s. Expected dub.json, dub.sdl, or dub.selections.json.".format(
+            filePath));
+    return [];
 }
 
 void download(Package package_)
@@ -235,11 +285,13 @@ Target[] describePackage(Package package_, out string mainTargetName)
     if (config.verbose)
     {
         import std.stdio : writeln;
+
         writeln("Dub description for package ", package_.versionedName, ":\n",
             dub_description.toPrettyString(JSONOptions.doNotEscapeSlashes));
     }
     auto rootPackage = dub_description["packages"].array.find!(p => p["name"].str == package_.name);
-    enforce(!rootPackage.empty, "Package %s not found in dub description.".format(package_.versionedName));
+    enforce(!rootPackage.empty, "Package %s not found in dub description.".format(
+            package_.versionedName));
     mainTargetName = rootPackage[0]["targetName"].str;
     return dub_description["targets"].array
         .filter!(t => t["packages"].array.canFind(dub_description["rootPackage"]))
@@ -328,6 +380,7 @@ string computeBuildFile(Package package_)
     if (config.verbose)
     {
         import std.stdio : writeln;
+
         writeln("Generated BUILD file content for package ", package_.versionedName, ":\n", buildFileContent);
     }
     return buildFileContent;
@@ -405,10 +458,11 @@ int main(string[] args)
         dub = environment.get("DUB");
     enforce(!dub.empty, "DUB executable path must be specified via --dub option or DUB environment variable.");
 
-    setConfig(bazelGeneratingTarget, cachePath, dub, skipSSLVerification.to!(Flag!"SkipSSLVerification"),
+    setConfig(bazelGeneratingTarget, cachePath, dub, skipSSLVerification.to!(
+            Flag!"SkipSSLVerification"),
         verbose.to!(Flag!"Verbose"));
 
-    auto packages = readDubSelectionsJson(inputFilePath);
+    auto packages = readDubDependencies(inputFilePath);
     packages.each!((ref p) => p.integrity = computePackageIntegrity(p));
     packages.each!((ref p) => p.targets = describePackage(p, p.mainTargetName));
     auto targetNameByPackage = packages.map!(p => tuple(p.name, p.mainTargetName)).assocArray;
