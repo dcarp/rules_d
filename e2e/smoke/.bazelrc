@@ -15,5 +15,5 @@ common:windows --define=protobuf_allow_msvc=true
 common:ci --lockfile_mode=off
 
 # Keep the disk cache out of Bazel's own output base hierarchy.
-common:ci --disk_cache=~/.cache/bazel/disk_cache
+common:ci --disk_cache=~/.cache/bazel-disk-cache
 test:ci --test_env=XDG_CACHE_HOME
