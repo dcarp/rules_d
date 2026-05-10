@@ -37,8 +37,6 @@ common:windows --cxxopt=/std:c++17
 # Protobuf 30.x requires an explicit opt-in for MSVC builds.
 common:windows --define=protobuf_allow_msvc=true
 
-# Keep the disk cache out of Bazel's own output base hierarchy.
-common:ci --disk_cache=~/.cache/bazel/disk_cache
 test:ci --test_env=XDG_CACHE_HOME
 
 # Load user-specific settings, if any
