@@ -1,10 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [":enablePreCommit", "config:best-practices"],
-  "packageRules": [
-    {
-      "matchFileNames": ["MODULE.bazel"],
-      "enabled": false
-    }
-  ]
+  "extends": [":enablePreCommit", "config:best-practices"]
 }
