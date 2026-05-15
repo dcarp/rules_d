@@ -1,19 +1,57 @@
 load("@bazel_lib//:bzl_library.bzl", "bzl_library")
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
-load("@rules_d//d:defs.bzl", "d_binary")
+load("@rules_d//d:defs.bzl", "d_binary", "d_library", "d_test")
+
+d_library(
+    name = "selections_lock_lib",
+    srcs = [
+        "build_file_generator.d",
+        "model.d",
+        "selections_lock_generator.d",
+    ],
+    deps = [
+        "//dub/private:d_utils",
+        "@rules_d__semver//:semver",
+    ],
+)
 
 d_binary(
     name = "generate_selections_lock",
-    srcs = ["generate_selections_lock.d"],
+    srcs = [
+        "generate_selections_lock.d",
+    ],
     data = ["//d:dub"],
     env = {
         "DUB": "$(location //d:dub)",
     },
     visibility = ["//visibility:public"],
     deps = [
-        "//dub/private:d_utils",
-        "@rules_d__semver//:semver",
+        ":selections_lock_lib",
     ],
+)
+
+d_binary(
+    name = "generate_build_file",
+    srcs = [
+        "generate_build_file.d",
+    ],
+    data = ["//d:dub"],
+    env = {
+        "DUB": "$(location //d:dub)",
+    },
+    visibility = ["//visibility:public"],
+    deps = [
+        ":selections_lock_lib",
+    ],
+)
+
+d_test(
+    name = "selections_lock_lib_test",
+    srcs = [
+        "build_file_generator_test.d",
+        "selections_lock_generator_test.d",
+    ],
+    deps = [":selections_lock_lib"],
 )
 
 bzl_library(
@@ -28,6 +66,11 @@ bzl_library(
 )
 
 build_test(
-    name = "generate_selections_lock_test",
+    name = "generate_selections_lock_build_test",
     targets = [":generate_selections_lock"],
+)
+
+build_test(
+    name = "generate_build_file_build_test",
+    targets = [":generate_build_file"],
 )
