@@ -19,4 +19,5 @@ dub_lock_dependencies(
     ],
     dub_selections_lock = "dub.selections.lock.json",
     tags = ["manual"],
+    verbose = True,
 )
